@@ -1,3 +1,7 @@
+<?php
+session_start();
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 	<head>
@@ -45,10 +49,30 @@
 						<li><a href="#"><i class="fa fa-phone"></i> +021-95-51-84</a></li>
 						<li><a href="#"><i class="fa fa-envelope-o"></i> email@email.com</a></li>
 						<li><a href="#"><i class="fa fa-map-marker"></i> 1734 Stonecoal Road</a></li>
+						
 					</ul>
 					<ul class="header-links pull-right">
-						<li><a href="#"><i class="fa fa-dollar"></i> USD</a></li>
-						<li><a href="compte.php"><i class="fa fa-user-o"></i> My Account</a></li>
+<li><a href="#"><i class="fa fa-dollar"></i> USD</a></li>
+
+<?php
+$a = new PDO("mysql:host=127.0.0.1;dbname=em","root","");
+if ( $_SESSION['ps']==0)
+{
+?>
+<ul class="header-links pull-right">
+<li><a href="connexion.php"><i class="fa fa-user-o"></i> log in</a></li>
+<li><a href="register.php"><i class="fa fa-user-o"></i> register</a></li>
+
+<?php
+}
+else
+{
+?>
+<ul class="header-links pull-right">
+<li><a href="compte.php"><i class="fa fa-user-o"></i> My Account</a></li>
+<?php
+}
+?>
 					</ul>
 				</div>
 			</div>
