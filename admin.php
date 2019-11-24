@@ -5,18 +5,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>admin</title>
     <link rel="stylesheet" type="text/css" href="2.css">
 
 
 
 </head>
 <body>
-
- <?php
- $a = new PDO("mysql:host=127.0.0.1;dbname=em","root","");
- $r = $a->query("SELECT * FROM `admin`  ORDER BY id  ");
-?>
+<?PHP
+     include "core.php";
+   $r=  afficher();
+     
+     ?>
 <table border="1" >
 <tr>
 <td>id</td>
@@ -54,22 +54,27 @@ while( $rs = $r->fetch())
 ?>
 
 </table>
+<?php
+
+
+     ?>
+ 
 <br>
 
 <form method="GET" action="">
 <input type="text" name="id" placeholder="taper l'id">
-<input type="submit" value=afficher>
+<input type="submit" name="aff" value=afficher>
 
 
 
 </form>
      <?PHP
+    
+          if (isset($_GET['aff']))
+{
      if (isset($_GET['id']))
      {
-         $a = new PDO("mysql:host=127.0.0.1;dbname=em","root","");
-     $r = $a->prepare("SELECT * FROM `admin` WHERE id = ?");
-     $r->execute(array($_GET['id']));
-
+      $r=recherche();      
      ?>
      <br>
      <table border="1">
@@ -107,16 +112,19 @@ while( $rs = $r->fetch())
 <?PHP
      }
     }
-     
+}
      ?>
      
      </table>
      <br>
      <form method="GET" action="">
  <input type="text" name="id" placeholder="taper i'id" >
- <input type="submit" value=supprimer>
+ <input type="submit" name="supp" value=supprimer>
  </form>
+ 
      <?PHP
+     if (isset($_GET['supp']))
+     {
      if (isset($_GET['id']))
      {
          $a = new PDO("mysql:host=127.0.0.1;dbname=em","root","");
@@ -124,10 +132,13 @@ while( $rs = $r->fetch())
      $r2 = $a->prepare("DELETE FROM `me` WHERE id = ?");
      $r->execute(array($_GET['id']));
      $r2->execute(array($_GET['id']));
+     header('Location: admin.php');
+
 
      }
+    }
      ?>
-    <a href="aj.php">aaa</a>
+    <a href="aj.php">a</a>
 
 </body>
 </html>

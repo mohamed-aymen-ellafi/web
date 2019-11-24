@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>register</title>
     <link rel="stylesheet" type="text/css" href="1.css">
 
 </head>
@@ -37,6 +37,8 @@
     </div>
 
 <?php
+include "core.php";
+
 $a = new PDO("mysql:host=127.0.0.1;dbname=em","root","");
 $er=0;
  #vrifusername----------------------------------------------------------------------------------------------
@@ -91,20 +93,17 @@ if(strlen($cp)==4)
      $passCNF=$_GET['mdp2'];
 
  if($passCNF==$pass)
- {     #ajoutf----------------------------------------------------------------------------------------------
-
+ {   
     if ($er==0 AND isset($_GET['username']) AND isset($_GET['mail'])AND isset($_GET['mdp']) AND !empty($_GET['username']) AND !empty($_GET['mail'])AND !empty($_GET['mdp'])AND !empty($_GET['mdp2'])) 
     {
-    $r=$a->prepare("INSERT INTO me(username,mail,mdp) VALUES (?,?,?)");
-    $r->execute(array($_GET['username'],$_GET['mail'],$_GET['mdp']));
+     ajouter ();
     }
-    #admin----------------------------------------------------------------------------------------------
-    if ($er==0 AND isset($_GET['nom']) AND isset($_GET['prenom'])AND isset($_GET['adresse'])AND isset($_GET['mail']) AND isset($_GET['num'])AND isset($_GET['cp']) AND !empty($_GET['nom']) AND !empty($_GET['prenom'])AND !empty($_GET['adresse'])AND !empty($_GET['mail']) AND !empty($_GET['num'])AND !empty($_GET['cp'])) 
+     if ($er==0 AND isset($_GET['nom']) AND isset($_GET['prenom'])AND isset($_GET['adresse'])AND isset($_GET['mail']) AND isset($_GET['num'])AND isset($_GET['cp']) AND !empty($_GET['nom']) AND !empty($_GET['prenom'])AND !empty($_GET['adresse'])AND !empty($_GET['mail']) AND !empty($_GET['num'])AND !empty($_GET['cp'])) 
     {
-    $r=$a->prepare("INSERT INTO `admin`(`nom`, `prenom`, `adresse`, `mail`, `num`, `cp`) VALUES (?,?,?,?,?,?)");
-   $r->execute(array($_GET['nom'],$_GET['prenom'],$_GET['adresse'],$_GET['mail'],$_GET['num'],$_GET['cp']));
+     ajouter_admin();
     }
-    
+
+
 
  }
  else 
@@ -133,54 +132,6 @@ else
 
 }
   
-/*#verifmdp----------------------------------------------------------------------------------------------
- if (isset($_GET['mdp'],$_GET['mdp2']) AND !empty($_GET['mdp']) AND !empty($_GET['mdp2']))
- {
-     $pass=$_GET['mdp'];
-     $passCNF=$_GET['mdp2'];
-
- if($passCNF==$pass)
- {
-     $er=0;
- }
- else 
- {
-     $er=1;
-     echo "<script type='text/javascript'>alert('the passwords are not identical');</script>";
- }
- 
- }
- echo $er;
- #vrifusername----------------------------------------------------------------------------------------------
- if (isset($_GET['username']))
- {
- $r = $a->prepare("SELECT * FROM me WHERE username = ? ");
- $r->execute(array($_GET['username']));
- while( $rs = $r->fetch())
- {
-    
- if(!empty($_GET['username']) AND $rs['username']==$_GET['username'])
- {
-     $er=1;
- echo "<script type='text/javascript'>alert('this username already existes please change');</script>";
- }
- }
- }
- #verifmail----------------------------------------------------------------------------------------------
- if (isset($_GET['mail']))
- {
- $r = $a->prepare("SELECT * FROM me WHERE mail = ? ");
- $r->execute(array($_GET['mail']));
- while( $rs = $r->fetch())
- {
-    
- if(!empty($_GET['mail']) AND $rs['mail']==$_GET['mail'])
- {
-     $er=1;
- echo "<script type='text/javascript'>alert('this mail already existes please change');</script>";
- }
- }
- }*/
  echo $er;
  
 ?>

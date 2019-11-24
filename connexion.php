@@ -1,10 +1,15 @@
+<?php
+session_start();
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>connexion</title>
     <link rel="stylesheet" type="text/css" href="1.css">
 
 
@@ -25,18 +30,24 @@
     </div>
 </body>
 <?php
-$a = new PDO("mysql:host=127.0.0.1;dbname=em","root","");
+     include "core.php";
+
 if (isset($_GET['username']) AND isset($_GET['mdp']))
 {
-$r = $a->prepare("SELECT * FROM me WHERE username = ? AND mdp = ? ");
-$r->execute(array($_GET['username'],$_GET['mdp']));
- while( $rs = $r->fetch())
+    $r=recherche_compte();
+
+
+    while( $rs = $r->fetch())
  {
  if (!empty($_GET['username']) AND !empty($_GET['mdp']))
   {
    if(  $rs['username']==$_GET['username'] AND $rs['mdp']==$_GET['mdp'])
-    {
-        header('Location: test.php');
+    {  
+        $_SESSION['ps']=$rs['id'];
+        $_SESSION['username']=$rs['username'];
+        $_SESSION['mail']=$rs['mail'];
+        $_SESSION['mdp']=$rs['mdp'];
+      header('Location: store.php');
     }
    /*if($rs['mdp']!=$_GET['mdp'])
     {
@@ -44,6 +55,7 @@ $r->execute(array($_GET['username'],$_GET['mdp']));
     }*/
   }
  }
+ 
 }
 
 ?>
