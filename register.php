@@ -19,6 +19,8 @@
 <input type="text" name="prenom" placeholder="Enter last name" required>
 <p>adress</p>
 <input type="text" name="adresse" placeholder="Enter your adress " required>
+<p>city</p>
+<input type="text" name="city" placeholder="Enter your city " required>
 <p>number</p>
 <input type="text" name="num" placeholder="Enter your number " required>
 <p>postal code</p>
@@ -37,7 +39,8 @@
     </div>
 
 <?php
-include "core.php";
+include "../core/core.php";
+include "../entities/entities.php";
 
 $a = new PDO("mysql:host=127.0.0.1;dbname=em","root","");
 $er=0;
@@ -96,12 +99,18 @@ if(strlen($cp)==4)
  {   
     if ($er==0 AND isset($_GET['username']) AND isset($_GET['mail'])AND isset($_GET['mdp']) AND !empty($_GET['username']) AND !empty($_GET['mail'])AND !empty($_GET['mdp'])AND !empty($_GET['mdp2'])) 
     {
-     ajouter ();
+        $me1=new me($_GET['username'],$_GET['mail'],$_GET['mdp']);
+        $me1C=new meC();
+        $me1C->ajouterme($me1);
+	
+
     }
-     if ($er==0 AND isset($_GET['nom']) AND isset($_GET['prenom'])AND isset($_GET['adresse'])AND isset($_GET['mail']) AND isset($_GET['num'])AND isset($_GET['cp']) AND !empty($_GET['nom']) AND !empty($_GET['prenom'])AND !empty($_GET['adresse'])AND !empty($_GET['mail']) AND !empty($_GET['num'])AND !empty($_GET['cp'])) 
+     if ($er==0 AND isset($_GET['nom']) AND isset($_GET['prenom'])AND isset($_GET['adresse'])AND isset($_GET['mail']) AND isset($_GET['num'])AND isset($_GET['cp']) AND isset($_GET['city']) AND !empty($_GET['nom']) AND !empty($_GET['prenom'])AND !empty($_GET['adresse'])AND !empty($_GET['mail']) AND !empty($_GET['num'])AND !empty($_GET['cp'])AND !empty($_GET['city'])) 
     {
-     ajouter_admin();
-    }
+        $admin1=new admin($_GET['nom'],$_GET['prenom'],$_GET['adresse'],$_GET['mail'],$_GET['num'],$_GET['cp'],$_GET['city']);
+        $admin1C=new adminC();
+        $admin1C->ajouteradmin($admin1);
+	    }
 
 
 
@@ -129,7 +138,6 @@ else
     
     echo "<script type='text/javascript'>alert('wrong number');</script>";
 }
-
 }
   
  echo $er;

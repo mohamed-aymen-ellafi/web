@@ -30,8 +30,8 @@ session_start();
     </div>
 </body>
 <?php
-     include "core.php";
-
+     include "../core/core.php";
+     $_SESSION['ps']=0;
 if (isset($_GET['username']) AND isset($_GET['mdp']))
 {
     $r=recherche_compte();
@@ -48,7 +48,7 @@ if (isset($_GET['username']) AND isset($_GET['mdp']))
         $_SESSION['mail']=$rs['mail'];
         $_SESSION['mdp']=$rs['mdp'];
       header('Location: store.php');
-    }
+   }
    /*if($rs['mdp']!=$_GET['mdp'])
     {
        echo "<script type='text/javascript'>alert('f');</script>";

@@ -13,8 +13,10 @@
 </head>
 <body>
 <?PHP
-     include "core.php";
-   $r=  afficher();
+     include "../core/core.php";
+ $admin1C=new adminC();
+$listeadmin=$admin1C->afficheradmins();
+
      
      ?>
 <table border="1" >
@@ -26,13 +28,14 @@
 <td>mail</td>
 <td>number</td>
 <td>postal code</td>
+<td>city</td>
 
 
 </tr>
 
 <?php
-while( $rs = $r->fetch())
-{
+foreach($listeadmin as $rs)
+     {
 
 ?>
 
@@ -44,6 +47,7 @@ while( $rs = $r->fetch())
 <td><?PHP echo $rs['mail'];?></td>
 <td><?PHP echo $rs['num'];?></td>
 <td><?PHP echo $rs['cp'];?></td>
+<td><?PHP echo $rs['city'];?></td>
 
 
 </tr>
@@ -86,6 +90,7 @@ while( $rs = $r->fetch())
 <td>mail</td>
 <td>number</td>
 <td>postal code</td>
+<td>city</td>
 
 
 </tr>
@@ -106,6 +111,7 @@ while( $rs = $r->fetch())
 <td><?PHP echo $rs['mail'];?></td>
 <td><?PHP echo $rs['num'];?></td>
 <td><?PHP echo $rs['cp'];?></td>
+<td><?PHP echo $rs['city'];?></td>
 
 
 </tr>
@@ -127,11 +133,7 @@ while( $rs = $r->fetch())
      {
      if (isset($_GET['id']))
      {
-         $a = new PDO("mysql:host=127.0.0.1;dbname=em","root","");
-     $r = $a->prepare("DELETE FROM `admin` WHERE id = ?");
-     $r2 = $a->prepare("DELETE FROM `me` WHERE id = ?");
-     $r->execute(array($_GET['id']));
-     $r2->execute(array($_GET['id']));
+          supprimer();
      header('Location: admin.php');
 
 
