@@ -1,57 +1,100 @@
-<HTML>
+<!DOCTYPE html>
+<html>
 <head>
+	<title></title>
 </head>
 <body>
-<?PHP
-include "../entities/promotion.php";
+
+<?php
+
 include "../core/promotionP.php";
-if (isset($_GET['reference'])){
-	$promotionP=new promotionP();
-    $result=$promotionP->recupererpromotion($_GET['reference']);
-	foreach($result as $row){
-		$reference=$row['reference'];
-		$id_produit=$row['id_produit'];
-		$dateDebut=$row['dateDebut'];
-		$dateFin=$row['dateFin'];
+include "../entities/promotion.php";
+
+
+if (isset($_GET['reference']))
+{
+	$promp=new promotionP(); 
+	$result=$promp->recupererpromotion($_GET['reference']); 
+
+foreach ($result as $row) {
+
+	$reference=$row['reference'];
+	$id_produit=$row['id_produit'];
+	$dateDebut=$row['dateDebut'];
+	$dateFin=$row['dateFin'];
+	$pourcentage=$row['pourcentage']; 
+
+	# code...
+		}
+}
 ?>
+
+
+<caption>modiification</caption>
+
+
+
 <form method="POST">
-<table>
-<caption>Modifier promotion</caption>
+
+	<table>
+		
+
+
 <tr>
-<td>refrecence</td>
-<td><input type="number" name="ref" value="<?PHP echo $refrecence ?>"></td>
+	<td>date debut</td>
+	<td>
+		<input type="date" name="dateDebut" value="<?php echo $row['dateDebut'] ;?>">
+	</td>
 </tr>
+
+
 <tr>
-<td>id produit</td>
-<td><input type="number" name="id" value="<?PHP echo $id_produit ?>"></td>
+	<td>date fin</td>
+	<td>
+		<input type="date" name="dateFin" value="<?php echo $dateFin ;?>">
+	</td>
 </tr>
+
 <tr>
-<td>date de debut </td>
-<td><input type="date" name="date1" value="<?PHP echo $dateDebut ?>"></td>
+	<td>pourcentage</td>
+	<td>
+		<input type="number" name="pourcentage" value="<?php echo $pourcentage ;?>">
+	</td>
 </tr>
+
+
 <tr>
-<td>date de fin </td>
-<td><input type="date" name="date2" value="<?PHP echo $dateFin ?>"></td>
+
+	<td>
+		<input type="hidden" value="<?php echo $row ['reference'] ;?>" name="reference">
+		<input type="submit" name="modifier" value="modifier">
+	</td>
 </tr>
+
 <tr>
-<td></td>
-<td><input type="submit" name="modifier" value="modifier"></td>
+	<td>
+		<input type="hidden" name="ref_ini" value="<?php echo $_GET['reference'] ;?>">
+	</td>
 </tr>
-<tr>
-<td></td>
-<td><input type="hidden" name="ref_ini" value="<?PHP echo $_GET['reference'];?>"></td>
-</tr>
-</table>
+
+	</table>
+
+	
+
 </form>
-<?PHP
+
+
+<?php
+	if(isset($_POST['modifier']))
+	{
+		$promo=new promotion($reference,$id_produit,$_POST['dateDebut'],$_POST['dateFin'],$_POST['pourcentage']); 
+
+		$promp->modifierpromotion($promo,$_POST['ref_ini']);
+
+
 	}
-}
-if (isset($_POST['modifier'])){
-	$promotion=new promotion($_POST['reference'],$_POST['id_produit'],$_POST['dateDebut'],$_POST['dateFin']);
-	$promotionP->modifierpromotion($promotion,$_POST['ref_ini']);
-	echo $_POST['ref_ini'];
-	header('Location: afficherpromotion.php');
-}
 ?>
+
+
 </body>
-</HTMl>
+</html>

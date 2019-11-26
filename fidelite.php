@@ -1,7 +1,8 @@
+
 <?php 
-include "../core/promotionP.php";
-$promotionP1 = new promotionP(); 
-$listepromotion=$promotionP1->afficherpromotion();
+include "../core/fideliteF.php";
+$fideliteF1 = new fideliteF(); 
+$listefidelite=$fideliteF1->afficherfidelite();
 ?>
 <!DOCTYPE html>
 <html>
@@ -11,7 +12,7 @@ $listepromotion=$promotionP1->afficherpromotion();
     <meta charset="utf-8">
 
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Data Tables</title>
+    <title>Fidelisation</title>
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="assets/vendor/bootstrap/css/bootstrap.min.css">
     <link href="assets/vendor/fonts/circular-std/style.css" rel="stylesheet">
@@ -446,7 +447,7 @@ John Abraham</h5>
                 <div class="row">
                     <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
                         <div class="page-header">
-                            <h2 class="pageheader-title">Promotions</h2>
+                            <h2 class="pageheader-title">fidelite</h2>
                             <p class="pageheader-text">Proin placerat ante duiullam scelerisque a velit ac porta, fusce sit amet vestibulum mi. Morbi lobortis pulvinar quam.</p>
                             <div class="page-breadcrumb">
                                 <nav aria-label="breadcrumb">
@@ -469,27 +470,23 @@ John Abraham</h5>
                     <!-- ============================================================== -->
                                          <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
                         <div class="card">
-                            <h5 class="card-header">Promotions</h5>
+                            <h5 class="card-header">fidelite</h5>
                             <div class="card-body">
                                 <div class="table-responsive">
                                     <table class="table table-striped table-bordered first">
-                                        <form method="POST" action="ajouterpromotion.php">
+                                        <form method="POST" action="ajoutfidelite.php">
                                      
 <tr>
 <th>reference</th>
-    <th>id_produit</th>
-    <th>dateDebut</th>
-    <th>dateFin</th>
-    <th>pourcentage</th>
+    <th>id_client</th>
+    <th>point</th>
     <th>ajouter</th>
 
 </tr>
-<td> <input type="number" name="reference" required=""> </td> 
+<td> <input type="number" name="ref" required=""> </td> 
 
-<td> <input type="number" name="id_produit" required=""> </td> 
-<td> <input type="date" name="dateDebut" required=""></td> 
-<td><input type="date" name="dateFin" required=""></td> 
-<td><input type="number" name="pourcentage" required=""></td> 
+<td> <input type="number" name="id_client" required=""> </td> 
+<td> <input type="number" name="point" required=""></td>  
 <td> <input type="submit" name="submit" value="submit"> </td> 
 
 
@@ -511,17 +508,16 @@ John Abraham</h5>
 
                                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
                         <div class="card">
-                            <h5 class="card-header">affichage promotion</h5>
+                            <h5 class="card-header">affichage fidelite</h5>
                             <div class="card-body">
                                 <div class="table-responsive">
                                     <table class="table table-striped table-bordered first">
                                      
 <tr>
     <th> reference</th>
-    <th>id_produit</th>
-    <th>date debut</th>
-    <th>date fin</th>
-    <th>pourcentage</th>
+    <th>id_client</th>
+    <th>point</th>
+    
 
 
     <th>supprimer</th>
@@ -529,26 +525,23 @@ John Abraham</h5>
 
 </tr>
 
-<?php foreach($listepromotion as $row){
+<?php foreach($listefidelite as $row){
 ?>
     <tr>
-    <td><?PHP echo $row['reference']; ?> </td>
-    <td><?PHP echo $row['id_produit']; ?> </td>
-    <td><?PHP echo $row['dateDebut']; ?> </td>
-    <td><?PHP echo $row['dateFin']; ?> </td>
-    <td><?PHP echo $row['pourcentage']; ?> </td>
-
+    <td><?PHP echo $row['ref']; ?> </td>
+    <td><?PHP echo $row['id_client']; ?> </td>
+    <td><?PHP echo $row['point']; ?> </td>
     <td>
-        <form method="POST" action="supprimerpromotion.php">
+        <form method="POST" action="supprimerfidelite.php">
     <input type="submit" name="supprimer" value="supprimer">
-        <input type="hidden" value="<?PHP echo $row['reference']; ?>" name="reference" >
+        <input type="hidden" value="<?PHP echo $row['ref']; ?>" name="ref" >
 
 
         </form>
     </td>
     <td>
               <button>
-                  <a href="modifierpromotion.php?reference=<?php echo $row['reference'];?>" target="_blank">modiffier</a>
+                  <a href="modifierfidelite.php?ref=<?php echo $row['ref'];?>" target="_blank">modiffier</a>
               </button>
 
     </tr>
