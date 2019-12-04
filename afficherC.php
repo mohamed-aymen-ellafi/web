@@ -1,10 +1,10 @@
 <?php
-include "../../core/produitC.php";
+
 include "../../core/categorieC.php";
- $produitc=new produitC();
- $liste=$produitc->afficherproduits();
-$categoriec=new categorieC();
- $listecat=$categoriec->affichercategories();
+
+ $categoriec=new categorieC();
+ $liste=$categoriec->affichercategories();
+
 
 ?>
 
@@ -44,12 +44,13 @@ $categoriec=new categorieC();
                 <div class="collapse navbar-collapse " id="navbarSupportedContent">
                     <ul class="navbar-nav ml-auto navbar-right-top">
                         <li class="nav-item">
-                               <form method="POST" action="search.php">
+                              <form method="POST" action="search.php">
                                 <div id="custom-search" class="top-search-bar">
                                 <input class="form-control" type="search" name="search"placeholder="Search..">
                                 
                             </div>
                             </form>
+                            
                         </li>
                         <li class="nav-item dropdown notification">
                             <a class="nav-link nav-icons" href="#" id="navbarDropdownMenuLink1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-fw fa-bell"></i> <span class="indicator"></span></a>
@@ -170,9 +171,10 @@ $categoriec=new categorieC();
                                     <ul class="nav flex-column">
                                         <li class="nav-item">
                                             
+                                            
                                                 <ul class="nav flex-column">
                                                     <li class="nav-item">
-                                                        <a class="nav-link" href="afficherP.php">Afficher la liste des Produits</a>
+                                                        <a class="nav-link" href="listeP.php">Afficher la liste des Produits</a>
                                                     </li>
                                                     <li class="nav-item">
                                                         <a class="nav-link" href="ajout.php">Ajouter Produit</a>
@@ -181,11 +183,11 @@ $categoriec=new categorieC();
                                                         <a class="nav-link" href="modifierP.php">Modifier Produit</a>
                                                     </li>
                                                     <li class="nav-item">
-                                                        <a class="nav-link" href="afficherP.php">Supprimer Produit</a>
+                                                        <a class="nav-link" href="supprimerP.php">Supprimer Produit</a>
                                                     </li>
-                                                  
+                                                   
                                                 </ul>
-                                            
+                                           
                                         </li>
                                         
                                         
@@ -206,7 +208,6 @@ $categoriec=new categorieC();
                                             <a class="nav-link" href="afficherPr.php">Afficher la liste des catégories</a>
                                         </li>
                                         <li class="nav-item">
-
                                             <a class="nav-link" href="ajoutC.php">Ajouter Catégorie</a>
                                         </li>
                                         <li class="nav-item">
@@ -292,19 +293,21 @@ $categoriec=new categorieC();
   $produit=new produitC();
   $liste=$produit->rechercherProduits($val);
     }
-
-    foreach ($listecat as $row1) {
-        
-    
+foreach($liste as $row){
     ?>
     <tr>
-      <td><?PHP echo $row1['ref']; ?></td>
-    <td><?PHP echo $row1['nomcategorie']; ?></td>
-  
+    
+    <td><?PHP echo $row['ref']; ?></td>
+    <td><?PHP echo $row['nomcategorie'];?></td>
+    
+   <td><form method="POST" action="supprimercategorie.php">
+    <input type="submit" name="supprimer" value="supprimer">
+    <input type="hidden" value="<?PHP echo $row['ref'];?>" name="ref">
+    </form>
+    </td>
    
     </tr>
     <?PHP
-
 }
 ?>
                                                 </tbody>

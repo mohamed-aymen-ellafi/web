@@ -4,6 +4,7 @@ include "../../entities/produit.php";
 
 ?>
 <html lang="en">
+<script type="text/javascript" src="ajout.js"></script>
 <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -33,9 +34,12 @@ include "../../entities/produit.php";
                 <div class="collapse navbar-collapse " id="navbarSupportedContent">
                     <ul class="navbar-nav ml-auto navbar-right-top">
                         <li class="nav-item">
-                            <div id="custom-search" class="top-search-bar">
-                                <input class="form-control" type="text" placeholder="Search..">
+                           <form method="POST" action="search.php">
+                                <div id="custom-search" class="top-search-bar">
+                                <input class="form-control" type="search" name="search"placeholder="Search..">
+                                
                             </div>
+                            </form>
                         </li>
                         <li class="nav-item dropdown notification">
                             <a class="nav-link nav-icons" href="#" id="navbarDropdownMenuLink1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-fw fa-bell"></i> <span class="indicator"></span></a>
@@ -155,14 +159,14 @@ include "../../entities/produit.php";
                                 <div id="submenu-1" class="collapse submenu" style="">
                                     <ul class="nav flex-column">
                                         <li class="nav-item">
-                                            <a class="nav-link" href="#" data-toggle="collapse" aria-expanded="false" data-target="#submenu-1-2" aria-controls="submenu-1-2">Modifier Stock</a>
-                                            <div id="submenu-1-2" class="collapse submenu" style="">
+                                            
                                                 <ul class="nav flex-column">
                                                     <li class="nav-item">
                                                         <a class="nav-link" href="index.html"></a>
                                                     </li>
                                                     <li class="nav-item">
                                                         <a class="nav-link" href="listeP.php">Afficher la liste des Produits</a>
+                                                    </li>
                                                     <li class="nav-item">
                                                         <a class="nav-link" href="ajout.php">Ajouter Produit</a>
                                                     </li>
@@ -170,16 +174,11 @@ include "../../entities/produit.php";
                                                         <a class="nav-link" href="modifierP.php">Modifier Produit</a>
                                                     </li>
                                                     <li class="nav-item">
-                                                        <a class="nav-link" href="afficherP.php">Supprimer Produit</a>
+                                                        <a class="nav-link" href="supprimerP.php">Supprimer Produit</a>
                                                     </li>
-                                                     <li class="nav-item">
-                                                        <a class="nav-link" href="ecommerce-product-checkout.html">Reccupérer Produit</a>
-                                                    </li>
-                                                     <li class="nav-item">
-                                                        <a class="nav-link" href="ecommerce-product-checkout.html">Trier Produit</a>
-                                                    </li>
+                                                    
                                                 </ul>
-                                            </div>
+                                            
                                         </li>
                                        
                                        
@@ -191,10 +190,13 @@ include "../../entities/produit.php";
                           
                            
                             
-                               <li class="nav-item">
+                            <li class="nav-item">
                                 <a class="nav-link active" href="#" data-toggle="collapse" aria-expanded="false" data-target="#submenu-6" aria-controls="submenu-6"><i class="fa fa-fw fa-user-circle"></i>Catégorie<span class="badge badge-success">6</span></a>
                                 <div id="submenu-6" class="collapse submenu" style="">
                                     <ul class="nav flex-column">
+                                         <li class="nav-item">
+                                            <a class="nav-link" href="afficherPr.php">Afficher la liste des catégories</a>
+                                        </li>
                                         <li class="nav-item">
                                             <a class="nav-link" href="ajoutC.php">Ajouter Catégorie</a>
                                         </li>
@@ -251,8 +253,11 @@ include "../../entities/produit.php";
                     <!-- end pageheader  -->
                     <!-- ============================================================== -->
                     <div>
+<html>
+<head></head>
 
-<?PHP
+<body>
+                      <?PHP
  
 if (isset($_GET['refproduit'])){
    $produitC=new produitC();
@@ -268,68 +273,69 @@ if (isset($_GET['refproduit'])){
         $dateajout=$row['dateajout'];
         $refcategorie=$row['refcategorie'];
 ?>
-
-
-
-<form method="POST">
-<table>
-<caption>Modifier Produit</caption>
-<tr>
-<td>refproduit</td>
-<td><input type="text" name="refproduit" value="<?PHP echo $refproduit ?>"></td>
-</tr>
-<tr>
-<td>nomproduit</td>
-<td><input type="text" name="nomproduit" value="<?PHP echo $nomproduit ?>"></td>
-</tr>
-<tr>
-<td>marque</td>
-<td><input type="text" name="marque" value="<?PHP echo $marque ?>"></td>
-</tr>
-<tr>
-<td>description</td>
-<td><input type="text" name="description" value="<?PHP echo $description ?>"></td>
-</tr>
-<tr>
-<td>urlimage</td>
-<td><input type="text" name="urlimage" value="<?PHP echo $urlimage ?>"></td>
-</tr>
-<tr>
-<td>quantite</td>
-<td><input type="number" name="quantite" value="<?PHP echo $quantite ?>"></td>
-</tr>
-<tr>
-<td>prixproduit</td>
-<td><input type="number" name="prixproduit" value="<?PHP echo $prixproduit ?>"></td>
-</tr>
-
-<tr>
-    <td>dateajout</td>
-    <td><input type="date" name="dateajout" value="<?PHP echo $dateajout?>"></td>
-</tr>
-<tr>
-    <td>refcategorie</td>
-    <td><input type="text" name="refcategorie" value="<?PHP echo $refcategorie?>"></td>
-</tr>
-<tr>
+                        <form method="POST">
+    <table>
+        <tr>
+            <td>reference</td>
+            <td><input type="text" name="refproduit" value="<?PHP echo $refproduit ?>"></td>
+            
+        </tr>
+        <tr>
+            <td>nomproduit</td>
+            <td><input type="text" name="nomproduit" value="<?PHP echo $nomproduit ?>"></td>
+        </tr>
+        <tr>
+            <td>marque</td>
+            <td><input type="text" name="marque" value="<?PHP echo $marque ?>"></td>
+        </tr>
+        <tr>
+            <td>description</td>
+            <td><input type="text" name="description"value="<?PHP echo $description ?>"></td>
+        </tr>
+        <tr>
+            <td>urlimage</td>
+            <td><input type="file" name="urlimage" value="<?php echo $urlimage?>"></td>
+        </tr>
+        <tr>
+            <td>quantite</td>
+            <td><input type="number" name="quantite" value="<?PHP echo $quantite ?>"></td>
+        </tr>
+        <tr>
+            <td>prixproduit</td>
+            <td><input type="number" name="prixproduit" value="<?PHP echo $prixproduit ?>"></td>
+        </tr>
+        
+        <tr>
+            <td>dateajout</td>
+            <td><input type="date" name="dateajout" value="<?PHP echo $dateajout ?>"></td>
+        </tr>
+         <tr>
+            <td>refcategorie</td>
+            <td><input type="text" name="refcategorie" value="<?PHP echo $refcategorie ?>"></td>
+        </tr>
+        
+           <tr>
     <td><input type="submit" name="modifier" value="modifier"></td>
 </tr>
-<tr>
+        <tr>
     <td><input type="hidden" name="refproduit_ini" value="<?PHP echo $_GET['refproduit'];?>"></td>
 </tr>
-</table>
+    </table>
 </form>
 <?PHP
     }
 }
 if (isset($_POST['modifier']))
 {
-    $produit=new produit($_POST['refproduit'],$_POST['nomproduit'],$_POST['marque'],$_POST['description'],$_POST['quantite'],$_POST['prixproduit'],$_POST['urlimage'],$_POST['dateajout'],$_POST['refcategorie']);
+    $produit=new produit($_POST['refproduit'],$_POST['nomproduit'],$_POST['marque'],$_POST['description'],$_POST['urlimage'],$_POST['quantite'],$_POST['prixproduit'],$_POST['dateajout'],$_POST['refcategorie']);
     $produitC->modifierproduit($produit,$_POST['refproduit_ini']);
     echo $_POST['refproduit_ini'];
     header('Location:  afficherP.php');
 }
 ?>
+
+</body>
+</html>
 
 
                     </div>

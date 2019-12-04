@@ -44,9 +44,12 @@ include "../../core/produitC.php";
                 <div class="collapse navbar-collapse " id="navbarSupportedContent">
                     <ul class="navbar-nav ml-auto navbar-right-top">
                         <li class="nav-item">
-                            <div id="custom-search" class="top-search-bar">
-                                <input class="form-control" type="text" placeholder="Search..">
+                               <form method="POST" action="search.php">
+                                <div id="custom-search" class="top-search-bar">
+                                <input class="form-control" type="search" name="search"placeholder="Search..">
+                                
                             </div>
+                            </form>
                         </li>
                         <li class="nav-item dropdown notification">
                             <a class="nav-link nav-icons" href="#" id="navbarDropdownMenuLink1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-fw fa-bell"></i> <span class="indicator"></span></a>
@@ -166,8 +169,8 @@ include "../../core/produitC.php";
                                 <div id="submenu-1" class="collapse submenu" style="">
                                     <ul class="nav flex-column">
                                         <li class="nav-item">
-                                            <a class="nav-link" href="#" data-toggle="collapse" aria-expanded="false" data-target="#submenu-1-2" aria-controls="submenu-1-2">Modifier Stock</a>
-                                            <div id="submenu-1-2" class="collapse submenu" style="">
+                                            
+                                            
                                                 <ul class="nav flex-column">
                                                     <li class="nav-item">
                                                         <a class="nav-link" href="listeP.php">Afficher la liste des Produits</a>
@@ -181,14 +184,9 @@ include "../../core/produitC.php";
                                                     <li class="nav-item">
                                                         <a class="nav-link" href="supprimerP.php">Supprimer Produit</a>
                                                     </li>
-                                                    <li class="nav-item">
-                                                        <a class="nav-link" href="ecommerce-product-checkout.html">Reccupérer Produit</a>
-                                                    </li>
-                                                     <li class="nav-item">
-                                                        <a class="nav-link" href="ecommerce-product-checkout.html">Trier Produit</a>
-                                                    </li>
+                                                   
                                                 </ul>
-                                            </div>
+                                            
                                         </li>
                                         
                                         
@@ -205,6 +203,9 @@ include "../../core/produitC.php";
                                 <a class="nav-link active" href="#" data-toggle="collapse" aria-expanded="false" data-target="#submenu-6" aria-controls="submenu-6"><i class="fa fa-fw fa-user-circle"></i>Catégorie<span class="badge badge-success">6</span></a>
                                 <div id="submenu-6" class="collapse submenu" style="">
                                     <ul class="nav flex-column">
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="afficherPr.php">Afficher la liste des catégories</a>
+                                        </li>
                                         <li class="nav-item">
                                             <a class="nav-link" href="ajoutC.php">Ajouter Catégorie</a>
                                         </li>
@@ -277,7 +278,7 @@ include "../../core/produitC.php";
                                             <table class="table">
                                                 <thead class="bg-light">
                                                     <tr class="border-0">
-                                                        <th></th>
+                                                        <th>image</th>
                                                         <th class="border-0">Référence</th>
                                                         <th class="border-0">Nom produit</th>
                                                         <th class="border-0">Marque</th>
@@ -292,25 +293,25 @@ include "../../core/produitC.php";
                                                 </thead>
                                                 <tbody>
                                                     <?PHP
+                                                                         $produitc=new produitC();
+                            if(isset($_POST['search']))
+    { $val=$_POST['search'];
+  $produit=new produitC();
+  $liste=$produit->rechercherProduits($val);
+    }
 foreach($liste as $row){
     ?>
     <tr>
-    <td><img src="./img/<?php echo $row['urlimage'];?>"/></td>
+    <td><img src="<?php echo $row['urlimage'];?>" width="100" height="100"></td>
     <td><?PHP echo $row['refproduit']; ?></td>
     <td><?PHP echo $row['nomproduit'];?></td>
     <td><?PHP echo $row['marque']; ?></td>
-     <td><?PHP echo $row['description']; ?></td>
+    <td><?PHP echo $row['description']; ?></td>
     <td><?PHP echo $row['quantite']; ?></td>
     <td><?PHP echo $row['prixproduit']; ?></td>
     <td><?PHP echo $row['dateajout']; ?></td>
     <td><?PHP echo $row['refcategorie']; ?></td>
-   <td><form method="POST" action="supprimerproduit.php">
-    <input type="submit" name="supprimer" value="supprimer">
-    <input type="hidden" value="<?PHP echo $row['refproduit'];?>" name="refproduit">
-    </form>
-    </td>
-    <td><a href="modifierP.php?refproduit=<?PHP echo $row['refproduit'];?>">
-    Modifier</a></td>
+   
     </tr>
     <?PHP
 }

@@ -5,55 +5,93 @@ function test()
 	var quantite=form.quantite.value;
 	var refC=form.refcategorie.value;
 	var nom=form.nomproduit.value;
-	var error=0;
+	var description=form.description.value;
+	var marque=form.marque.value;
+	var url=form.urlimage.value;
+	var x=true;
 	if(refp.length=='')
 	{
 		alert("le champ refproduit est obligatoire");
-		error=1;
+		x=false;
+		
 	}
-	
-	else if(refp[0]!='#')
+	 if(((refp.length>4)||(refp.length<4))&&(refp.length!=''))
+	{
+        alert(" la référence du produit doit contenir 4 caractère");
+        x=false;
+	}
+	   if((refp[0]!='#')&&(refp.length!=''))
 	{
 		alert("la référence du produit doit commencer par #");
-		error=1;
+		x=false;
 	}
 	
-	else if(refp.charAt(1)<'A'||refp.charAt(1)>'Z')
+	  if((refp.charAt(1)<'A'||refp.charAt(1)>'Z')&&(refp.length!='')&&(refp[0]=='#'))
 	{  
         alert("le deuxième caractère de la référence du produit doit etre une lettre majuscule");
-         error=1;
+         x=false;
 	}
-		if(refC.length=='')
-	{
-		alert("le champ refcategorie est obligatoire");
-		error=1;
-	}
-	
-	else if(refC[0]!='#')
-	{
-		alert("la référence du categorie doit commencer par #");
-		error=1;
-	}
-	
-	else if(refC.charAt(1)<'A'||refC.charAt(1)>'Z')
-	{  
-        alert("le deuxième caractère de la référence du categorie doit etre une lettre majuscule");
-         error=1;
-	}
-		if(nom.length=='')
+    
+	  if(nom.length=='')
 	{
 		alert("veuillez donner un nom à votre produit");
-		error=1;
+		x=false;
 	}
-	else if(nom.charAt(0)<'A'||nom.charAt(0)>'Z')
+	   if((nom.charAt(0)<'A'||nom.charAt(0)>'Z')&&(nom.length!=''))
 	{
 		alert("le nom du produit doit commencer par une lettre majuscule");
-		error=1;
+		x=false;
 	}
-	 if(error!=1)
-	
+	  if(marque.length=='')
 	{
-		alert("*****");
+          alert("le champ marque est obligatoire");
+          x=false;
 	}
+	 if(description.length=='')
+	{
+		alert("champ description obligatoire");
+		x=false;
+	}
+	 if(url.length=='')
+	{
+		alert("donnez l'url de l'image");
+		x=false;
+	}
+	 if(quantite.length=='')
+	{
+		alert("le champ quantite  est obligatoire");
+		x=false;
+	}
+	 if((quantite<1)&&(quantite.length!=''))
+	{
+		alert("la quantite du produit doit etre supérieure à 1");
+		x=false;
+	}
+	if(prix.length=='')
+	{
+		alert("le champ prix produit est obligatoire");
+		x=false;
+	}
+if(refC.length=='')
+	{
+		alert("le champ refcategorie est obligatoire");
+		x=false;
+	}
+	
+	if((refC[0]!='#')&&(refC.length!=''))
+	{
+		alert("la référence du categorie doit commencer par #");
+		x=false;
+	}
+	
+	  if((refC.charAt(1)<'A'||refC.charAt(1)>'Z')&&(refC.length!='')&&refC[0]=='#')
+	{  
+        alert("le deuxième caractère de la référence du categorie doit etre une lettre majuscule");
+         x=false;
+	}
+	return x;
+	
 	
 }
+
+

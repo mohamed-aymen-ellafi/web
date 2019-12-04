@@ -51,16 +51,14 @@ class produitC
        echo "dateajout:".$produit->getdateajout()."<br>";
         echo "refcategorie:".$produit->getrefcategorie()."<br>";
 	}
-
-
-		function modifierproduit($produit,$refproduit)
+	function modifierproduit($produit,$refproduit)
 	{
 		$sql="UPDATE produit SET refproduit=:refproduits, nomproduit=:nomproduit,marque=:marque,description=:description,urlimage=:urlimage,quantite=:quantite,prixproduit=:prixproduit,dateajout=:dateajout,refcategorie=:refcategorie WHERE refproduit=:refproduit";
 		
 		$db = config::getConnexion();
 		//$db->setAttribute(PDO::ATTR_EMULATE_PREPARES,false);
 try{		
-           $refproduits=$produit->getrefproduit();
+        $refproduits=$produit->getrefproduit();
             $nomproduit=$produit->getnomproduit();
             $marque=$produit->getmarque();
             $description=$produit->getdescription();
@@ -82,8 +80,6 @@ try{
 		$req->bindValue(':refcategorie',$refcategorie);
 
 		$req->execute();
-		$result = $req->fetch(PDO::FETCH_OBJ);
-	    return $result;
            // header('Location: index.php');
         }
         catch (Exception $e){
@@ -93,6 +89,8 @@ try{
         }
 		
 	}
+
+
 	 function supprimerproduit($refproduit)
 	{
 		$db = config::getConnexion();
@@ -111,17 +109,111 @@ try{
 	}
 	function reccupererproduit($refproduit)
 	{
-		$sql="SELECT * From produit where refproduit=$refproduit";
-		$db=config::getConnexion();
-		try
-		{   
-			$liste=$db->query($sql);
-			return $liste;
+		$sql="SELECT * from produit where refproduit=$refproduit ";
+		$db = config::getConnexion();
+		try{
+		$req=$db->prepare($sql);
+ 	    $req->execute();
+ 		$produit= $req->fetchALL(PDO::FETCH_OBJ);
+		return $produit;
 		}
-		catch (Exception $e)
-        {
+        catch (Exception $e){
             die('Erreur: '.$e->getMessage());
         }
+	}
+ public function rechercherProduits($foo)
+    {   
+	    $db = config::getConnexion(); 
+        $sql="SELECT * from produit where nomproduit LIKE '%$foo%'  ";
+         //connexion bd
+        
+        //reqt sql
+        //fetch data
+        try
+        {
+        	$req=$db->prepare($sql);
+ 	    $req->execute();
+ 		$rdv= $req->fetchALL(PDO::FETCH_OBJ);
+		return $rdv;
+        }
+        catch (Exception $e)
+        {
+        	die('Erreur:'.$e->getMessage());
+        }
+    }
+	public function triPrix()
+	{
+		$db = config::getConnexion();
+    	$sql = "SELECT * FROM produit ORDER BY prixproduit ASC;";
+		
+		$req = $db->prepare($sql);
+		$req->execute();
+		$result = $req->fetchAll(PDO::FETCH_OBJ);
+		return $result;
+	
+	}
+	public function triPrixDesc()
+	{
+		$db = config::getConnexion();
+    	$sql = "SELECT * FROM produit ORDER BY prixproduit DESC;";
+		
+		$req = $db->prepare($sql);
+		$req->execute();
+		$result = $req->fetchAll(PDO::FETCH_OBJ);
+		return $result;
+	
+	}
+	 public function triPrixA()
+	{
+		$db = config::getConnexion();
+    	$sql = " SELECT * FROM produit ORDER BY nomproduit ASC";
+		
+		$req = $db->prepare($sql);
+		$req->execute();
+		$result = $req->fetchAll(PDO::FETCH_OBJ);
+		return $result;
+	
+	}
+ public function triPrixZ()
+	{
+		$db = config::getConnexion();
+    	$sql = " SELECT * FROM produit ORDER BY nomproduit DESC";
+		
+		$req = $db->prepare($sql);
+		$req->execute();
+		$result = $req->fetchAll(PDO::FETCH_OBJ);
+		return $result;
+	
+	}
+		function trierproduitqteDESC()
+	{
+  		$db = config::getConnexion();
+       		$sql="SELECT * FROM produit order by quantite DESC";
+
+		try{
+ 		$req=$db->prepare($sql);
+ 	    $req->execute();
+ 		$produit= $req->fetchALL(PDO::FETCH_OBJ);
+		return $produit;
+		}
+        catch (Exception $e){
+            die('Erreur: '.$e->getMessage());
+        }	
+	}
+		function trierproduitqteASC()
+	{
+  		$db = config::getConnexion();
+       		$sql="SELECT * FROM produit order by quantite ASC";
+
+		try{
+ 		$req=$db->prepare($sql);
+ 	    $req->execute();
+ 		$produit= $req->fetchALL(PDO::FETCH_OBJ);
+		return $produit;
+		}
+        catch (Exception $e){
+            die('Erreur: '.$e->getMessage());
+        }	
 	}
 }
 ?>

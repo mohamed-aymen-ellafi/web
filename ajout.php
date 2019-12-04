@@ -34,9 +34,12 @@ include "../../entities/produit.php";
                 <div class="collapse navbar-collapse " id="navbarSupportedContent">
                     <ul class="navbar-nav ml-auto navbar-right-top">
                         <li class="nav-item">
-                            <div id="custom-search" class="top-search-bar">
-                                <input class="form-control" type="text" placeholder="Search..">
+                               <form method="POST" action="search.php">
+                                <div id="custom-search" class="top-search-bar">
+                                <input class="form-control" type="search" name="search"placeholder="Search..">
+                                
                             </div>
+                            </form>
                         </li>
                         <li class="nav-item dropdown notification">
                             <a class="nav-link nav-icons" href="#" id="navbarDropdownMenuLink1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-fw fa-bell"></i> <span class="indicator"></span></a>
@@ -156,8 +159,8 @@ include "../../entities/produit.php";
                                 <div id="submenu-1" class="collapse submenu" style="">
                                     <ul class="nav flex-column">
                                         <li class="nav-item">
-                                            <a class="nav-link" href="#" data-toggle="collapse" aria-expanded="false" data-target="#submenu-1-2" aria-controls="submenu-1-2">Modifier Stock</a>
-                                            <div id="submenu-1-2" class="collapse submenu" style="">
+                                            
+                                            
                                                 <ul class="nav flex-column">
                                                     <li class="nav-item">
                                                         <a class="nav-link" href="index.html"></a>
@@ -174,14 +177,9 @@ include "../../entities/produit.php";
                                                     <li class="nav-item">
                                                         <a class="nav-link" href="supprimerP.php">Supprimer Produit</a>
                                                     </li>
-                                                     <li class="nav-item">
-                                                        <a class="nav-link" href="ecommerce-product-checkout.html">Reccupérer Produit</a>
-                                                    </li>
-                                                     <li class="nav-item">
-                                                        <a class="nav-link" href="ecommerce-product-checkout.html">Trier Produit</a>
-                                                    </li>
+                                                   
                                                 </ul>
-                                            </div>
+                                            
                                         </li>
                                        
                                        
@@ -197,6 +195,9 @@ include "../../entities/produit.php";
                                 <a class="nav-link active" href="#" data-toggle="collapse" aria-expanded="false" data-target="#submenu-6" aria-controls="submenu-6"><i class="fa fa-fw fa-user-circle"></i>Catégorie<span class="badge badge-success">6</span></a>
                                 <div id="submenu-6" class="collapse submenu" style="">
                                     <ul class="nav flex-column">
+                                         <li class="nav-item">
+                                            <a class="nav-link" href="afficherPr.php">Afficher la liste des catégories</a>
+                                        </li>
                                         <li class="nav-item">
                                             <a class="nav-link" href="ajoutC.php">Ajouter Catégorie</a>
                                         </li>
@@ -253,7 +254,7 @@ include "../../entities/produit.php";
                     <!-- end pageheader  -->
                     <!-- ============================================================== -->
                     <div>
-                        <form method="POST" action="ajouterproduit.php" id="form">
+                        <form method="POST" action="ajouterproduit.php" name="form"  onsubmit="return test()" enctype="multipart/form-data">
     <table>
         <tr>
             <td>reference</td>
@@ -274,7 +275,7 @@ include "../../entities/produit.php";
         </tr>
         <tr>
             <td>urlimage</td>
-            <td><input type="text" name="urlimage"></td>
+            <td><input type="file" name="urlimage"></td>
         </tr>
         <tr>
             <td>quantite</td>
@@ -295,7 +296,7 @@ include "../../entities/produit.php";
         </tr>
         <tr>
             <td>
-                <input type="button" name="ajouter" value="ajouter" onClick="test()">
+                <input type="submit" name="ajouter" value="ajouter" onsubmit="return window.print()">
             </td>
         </tr>
     </table>

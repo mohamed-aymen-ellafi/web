@@ -1,12 +1,4 @@
-<?php
 
-include "../../core/produitC.php";
-
- $produitc=new produitC();
- $liste=$produitc->afficherproduits();
-
-
-?>
 
 <html lang="en">
  
@@ -27,7 +19,7 @@ include "../../core/produitC.php";
     <title>Concept - Bootstrap 4 Admin Dashboard Template</title>
 </head>
 
-<body>
+<body >
     <!-- ============================================================== -->
     <!-- main wrapper -->
     <!-- ============================================================== -->
@@ -44,9 +36,12 @@ include "../../core/produitC.php";
                 <div class="collapse navbar-collapse " id="navbarSupportedContent">
                     <ul class="navbar-nav ml-auto navbar-right-top">
                         <li class="nav-item">
-                            <div id="custom-search" class="top-search-bar">
-                                <input class="form-control" type="text" placeholder="Search..">
+                           <form method="POST" action="search.php">
+                                <div id="custom-search" class="top-search-bar">
+                                <input class="form-control" type="search"name="search" placeholder="Search..">
+                                
                             </div>
+                            </form>
                         </li>
                         <li class="nav-item dropdown notification">
                             <a class="nav-link nav-icons" href="#" id="navbarDropdownMenuLink1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-fw fa-bell"></i> <span class="indicator"></span></a>
@@ -166,8 +161,7 @@ include "../../core/produitC.php";
                                 <div id="submenu-1" class="collapse submenu" style="">
                                     <ul class="nav flex-column">
                                         <li class="nav-item">
-                                            <a class="nav-link" href="#" data-toggle="collapse" aria-expanded="false" data-target="#submenu-1-2" aria-controls="submenu-1-2">Modifier Stock</a>
-                                            <div id="submenu-1-2" class="collapse submenu" style="">
+                                           
                                                 <ul class="nav flex-column">
                                                     <li class="nav-item">
                                                         <a class="nav-link" href="listeP.php">Afficher la liste des Produits</a>
@@ -181,14 +175,9 @@ include "../../core/produitC.php";
                                                     <li class="nav-item">
                                                         <a class="nav-link" href="supprimerP.php">Supprimer Produit</a>
                                                     </li>
-                                                    <li class="nav-item">
-                                                        <a class="nav-link" href="ecommerce-product-checkout.html">Reccupérer Produit</a>
-                                                    </li>
-                                                     <li class="nav-item">
-                                                        <a class="nav-link" href="ecommerce-product-checkout.html">Trier Produit</a>
-                                                    </li>
+                                                   
                                                 </ul>
-                                            </div>
+                                            
                                         </li>
                                         
                                         
@@ -205,6 +194,9 @@ include "../../core/produitC.php";
                                 <a class="nav-link active" href="#" data-toggle="collapse" aria-expanded="false" data-target="#submenu-6" aria-controls="submenu-6"><i class="fa fa-fw fa-user-circle"></i>Catégorie<span class="badge badge-success">6</span></a>
                                 <div id="submenu-6" class="collapse submenu" style="">
                                     <ul class="nav flex-column">
+                                         <li class="nav-item">
+                                            <a class="nav-link" href="afficherPr.php">Afficher la liste des catégories</a>
+                                        </li>
                                         <li class="nav-item">
                                             <a class="nav-link" href="ajoutC.php">Ajouter Catégorie</a>
                                         </li>
@@ -270,6 +262,60 @@ include "../../core/produitC.php";
                                           <!-- recent orders  -->
                             <!-- ============================================================== -->
                             <div class="col-xl-9 col-lg-12 col-md-6 col-sm-12 col-12">
+                                <div >
+                                <label>
+                                     Trier par:
+                                    <select class="input-select" size="1" onChange="location = this.options[this.selectedIndex].value;">
+                                        <option value="afficherproduitback.php?afficherproduitback=1">Default</option>
+                                        <option value="afficherproduitback.php?ProduitsTries=1">Prix moins cher</option>
+                                        <option value="afficherproduitback.php?ProduitsTriesDesc=1">Prix plus cher</option>
+                                        <option value="afficherproduitback.php?ProduitsTriesqteDESC=1">moins de quantité</option>
+                                        <option value="afficherproduitback.php?ProduitsTriesqteASC=1">plus de quantité</option>
+                                        <option value="afficherproduitback.php?ProduitsTriesA=1"> A-Z</option>
+                                        <option value="afficherproduitback.php?ProduitsTriesZ=1">Z-A</option>
+                                    </select>
+                                </label>
+
+                                                    <?php 
+                        include_once "../../core/produitC.php";
+                        $produitc=new produitC();
+                        if (isset($_GET['search']))
+    {  $liste = $produitc->rechercherProduits($_GET['search']);
+     //$result = $produitc->afficherModifierProduit($_GET['idProduit']); 
+
+     
+     }
+      else if(isset($_GET['ProduitsTriesqteDESC']))
+     {
+        $liste = $produitc->trierproduitqteDESC();
+     }
+      else if(isset($_GET['ProduitsTriesqteASC']))
+     {
+        $liste = $produitc->trierproduitqteASC();
+     }
+     else if(isset($_GET['ProduitsTries']))
+     {
+        $liste = $produitc->triPrix();
+     }
+     else if(isset($_GET['ProduitsTriesA']))
+     {
+        $liste = $produitc->triPrixA();
+     }
+     else if(isset($_GET['ProduitsTriesZ']))
+     {
+        $liste = $produitc->triPrixZ();
+     }
+     else if(isset($_GET['ProduitsTriesDesc']))
+     {
+        $liste = $produitc->triPrixDesc(); 
+     }
+     else
+      {  $liste = $produitc->afficherproduits(); 
+
+      }
+
+ ?>
+                            </div>
                                 <div class="card">
                                     <h5 class="card-header">Liste des produits</h5>
                                     <div class="card-body p-0">
@@ -292,10 +338,16 @@ include "../../core/produitC.php";
                                                 </thead>
                                                 <tbody>
                                                     <?PHP
+                                                                         $produitc=new produitC();
+                            if(isset($_POST['search']))
+    { $val=$_POST['search'];
+  $produit=new produitC();
+  $liste=$produit->rechercherProduits($val);
+    }
 foreach($liste as $row){
     ?>
     <tr>
-    <td><img src="./img/<?php echo $row['urlimage'];?>"/></td>
+    <td><img src="<?php echo $row['urlimage'];?>" width="100" height="100"></td>
     <td><?PHP echo $row['refproduit']; ?></td>
     <td><?PHP echo $row['nomproduit'];?></td>
     <td><?PHP echo $row['marque']; ?></td>
