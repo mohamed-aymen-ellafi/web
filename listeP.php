@@ -19,7 +19,7 @@
     <title>Concept - Bootstrap 4 Admin Dashboard Template</title>
 </head>
 
-<body >
+<body onload="window.print()">
     <!-- ============================================================== -->
     <!-- main wrapper -->
     <!-- ============================================================== -->
@@ -36,12 +36,54 @@
                 <div class="collapse navbar-collapse " id="navbarSupportedContent">
                     <ul class="navbar-nav ml-auto navbar-right-top">
                         <li class="nav-item">
-                           <form method="POST" action="search.php">
+                                          <?php
+
+
+try
+{
+ $bdd = new PDO("mysql:host=localhost;dbname=alibaba", "root", "");
+ $bdd ->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+}
+catch(Exception $e)
+{
+  die("Une érreur a été trouvé : " . $e->getMessage());
+}
+$bdd->query("SET NAMES UTF8");
+
+if (isset($_GET['s']) AND $_GET["s"] == "Search")
+{
+  
+ $_GET["terme"] = htmlspecialchars($_GET["terme"]); //pour sécuriser le formulaire contre les intrusions html
+ $terme = $_GET['terme'];
+ 
+
+ if (isset($terme))
+ {
+
+  $terme = strtolower($terme);
+  $select_terme = $bdd->prepare("SELECT urlimage,refproduit,nomproduit,marque,quantite,prixproduit,dateajout,refcategorie FROM produit WHERE nomproduit LIKE ? OR prixproduit LIKE ? or quantite LIKE ?");
+  $select_terme->execute(array("%".$terme."%", "%".$terme."%","%".$terme."%"));
+
+ }
+ else
+ {
+  $message = "Vous devez entrer votre requete dans la barre de recherche";
+ }
+}
+else
+{
+  $select_terme = $bdd->prepare("SELECT * FROM produit ");
+  $select_terme->execute(array("%","%","%","%","%","%","%"));
+ 
+}
+?>
+                                <form method="GET" action="search.php">
                                 <div id="custom-search" class="top-search-bar">
-                                <input class="form-control" type="search"name="search" placeholder="Search..">
-                                
-                            </div>
-                            </form>
+                                   <input type="search" class="form-control" placeholder="Search here..." name="terme">
+                                              <input type="hidden" name="s" value="Search">
+
+                                 </div>
+                             </form>
                         </li>
                         <li class="nav-item dropdown notification">
                             <a class="nav-link nav-icons" href="#" id="navbarDropdownMenuLink1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-fw fa-bell"></i> <span class="indicator"></span></a>
@@ -279,13 +321,13 @@
                                                     <?php 
                         include_once "../../core/produitC.php";
                         $produitc=new produitC();
-                        if (isset($_GET['search']))
+                        /*if (isset($_GET['search']))
     {  $liste = $produitc->rechercherProduits($_GET['search']);
      //$result = $produitc->afficherModifierProduit($_GET['idProduit']); 
 
      
      }
-      else if(isset($_GET['ProduitsTriesqteDESC']))
+      else*/ if(isset($_GET['ProduitsTriesqteDESC']))
      {
         $liste = $produitc->trierproduitqteDESC();
      }
@@ -339,11 +381,11 @@
                                                 <tbody>
                                                     <?PHP
                                                                          $produitc=new produitC();
-                            if(isset($_POST['search']))
+                            /*if(isset($_POST['search']))
     { $val=$_POST['search'];
   $produit=new produitC();
   $liste=$produit->rechercherProduits($val);
-    }
+    }*/
 foreach($liste as $row){
     ?>
     <tr>

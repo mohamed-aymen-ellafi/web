@@ -74,19 +74,59 @@ $produitc=new produitC();
 							</div>
 						</div>
 						<!-- /LOGO -->
+						
+                           <?php
 
+
+try
+{
+ $bdd = new PDO("mysql:host=localhost;dbname=alibaba", "root", "");
+ $bdd ->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+}
+catch(Exception $e)
+{
+  die("Une érreur a été trouvé : " . $e->getMessage());
+}
+$bdd->query("SET NAMES UTF8");
+
+if (isset($_GET['s']) AND $_GET["s"] == "Search")
+{
+  
+ $_GET["terme"] = htmlspecialchars($_GET["terme"]); //pour sécuriser le formulaire contre les intrusions html
+ $terme = $_GET['terme'];
+ 
+
+ if (isset($terme))
+ {
+
+  $terme = strtolower($terme);
+  $select_terme = $bdd->prepare("SELECT urlimage,refproduit,nomproduit,marque,quantite,prixproduit,dateajout,refcategorie FROM produit WHERE nomproduit LIKE ? OR prixproduit LIKE ? or quantite LIKE ?");
+  $select_terme->execute(array("%".$terme."%", "%".$terme."%","%".$terme."%"));
+
+ }
+ else
+ {
+  $message = "Vous devez entrer votre requete dans la barre de recherche";
+ }
+}
+else
+{
+  $select_terme = $bdd->prepare("SELECT * FROM produit ");
+  $select_terme->execute(array("%","%","%","%","%","%","%"));
+ 
+}
+?>
 						<!-- SEARCH BAR -->
 						<div class="col-md-6">
 							<div class="header-search">
-								<form action="rechercherProduit.php" method="post">
+								<form action="rechercherProduit.php" method="GET">
 									<select class="input-select">
 										<option value="0">All Categories</option>
 										<option value="1">Category 01</option>
 										<option value="1">Category 02</option>
 									</select>
-									<input class="input" placeholder="Search here" name="search" required="">
-									
-									<button class="search-btn">Search</button>
+									<input class="input" placeholder="Search here" name="terme">
+									<input type="submit" name="s" value="Search" class="search-btn">
 								</form>
 							</div>
 						</div>
@@ -195,10 +235,14 @@ $produitc=new produitC();
 							<div class="checkbox-filter">
 
 								<div class="input-checkbox">
-									<input type="checkbox" id="category-1">
+									
+									<a href="afficherparcategorie.php">
 									<label for="category-1">
+										<span></span>
+										
 										<?php echo $pr['nomcategorie'];?>
 									</label>
+								</a>
 								</div>
 
 							</div>
@@ -255,16 +299,7 @@ $produitc=new produitC();
 						<!-- store products -->
 						<?php 
 						
-						
-							if(isset($_POST['search']))
-    { $val=$_POST['search'];
-  $produit=new produitC();
-  $liste=$produit->rechercherProduits($val);
-	} //$liste = $produitc->rechercherProduits($_GET['search']);
-	 //$result = $produitc->afficherModifierProduit($_GET['idProduit']); 
-
-	 
-	  else if(isset($_GET['ProduitsTriesqteDESC']))
+	if(isset($_GET['ProduitsTriesqteDESC']))
 	 {
 	 	$liste = $produitc->trierproduitqteDESC();
 	 }
@@ -297,18 +332,8 @@ $produitc=new produitC();
 
 
                         							<?php
-//include "../../core/produitC.php";
-//include "../../core/categorieC.php";
-//$produitc=new produitC();
-//$liste=$produitc->afficherproduits();
-//$categoriec=new categorieC();
-//$listecat=$categoriec->affichercategories();
 
-									
-									//foreach ($listecat as $row1) {
-
-										foreach ($liste as $row) {
-											
+ while($terme_trouve = $select_terme->fetch()){										
 										
 									
 									?>
@@ -318,16 +343,16 @@ $produitc=new produitC();
 							<div class="col-md-4 col-xs-6">
 								<div class="product">
 									<div class="product-img">
-										<img src="../back/<?php echo $row->urlimage;?>">
+										<img src="../back/<?php echo $terme_trouve['urlimage'];?>">
 										
 									</div>
 									<div class="product-body">
-											<h3 class="product-name"> <?php echo $row->nomproduit;?></h3>
+											<h3 class="product-name"> <?php echo $terme_trouve['nomproduit'];?></h3>
 										<p class="product-category"><?php //echo $row1['nomcategorie'];?></p>
 										<h2 class="product-price">
-											<?php echo $row->quantite;?> Instrument(s)
+											<?php echo $terme_trouve['quantite'];?> Instrument(s)
 										</h2>
-												<h4 class="product-price"> <?php echo $row->prixproduit;?>DT</h4>
+												<h4 class="product-price"> <?php echo $terme_trouve['prixproduit'];?>DT</h4>
 										
 										<div class="product-rating">
 											<i class="fa fa-star"></i>
@@ -339,8 +364,8 @@ $produitc=new produitC();
 										<div class="product-btns">
 											<button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span class="tooltipp">add to wishlist</span></button>
 											<button class="add-to-compare"><i class="fa fa-exchange"></i><span class="tooltipp">add to compare</span></button>
-											<!--<a href="details.php" class="quick-view">
-											<button class="quick-view"><i class="fa fa-eye"></i><span class="tooltipp">quick view</span></button></a>-->
+												<a href="details.php?<?php echo $row['refproduit']?>">
+											<button class="quick-view"><i class="fa fa-eye"></i><span class="tooltipp">quick view</span></button></a>
 										</div>
 									</div>
 									<div class="add-to-cart">

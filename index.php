@@ -1,478 +1,658 @@
 <?php
-include "../../core/produitC.php";
- $produitc=new produitC();
- $liste=$produitc->afficherproduits();
+require '../../core/produitC.php';
+$produitc=new produitC();
+
+function checkInput($data)
+{
+    $data = trim($data);
+    $data = stripslashes($data);
+    $data = htmlspecialchars($data);
+    return $data;
+}
+if(isset($_GET['refproduit']))
+{
+    $id=checkInput($_GET['refproduit']);
+}
+	$id="";		$db = config::getConnexion();
+
+$statement = $db->prepare("SELECT urlimage,nomproduit,prixproduit,description FROM produit WHERE refproduit LIKE ?");
+$statement->execute(array($id));
+$item = $statement->fetch();
 
 
-?>
+$titre = $item['nomproduit'];?>
+<!--pagination-->
+<?php
+$mysqli = mysqli_connect('localhost', 'root', '', 'alibaba');// Get the total number of records from our table "students".
+$total_pages = $mysqli->query('SELECT COUNT(*) FROM produit')->fetch_row()[0];
 
-<html lang="en">
- 
-<head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="assets/vendor/bootstrap/css/bootstrap.min.css">
-    <link href="assets/vendor/fonts/circular-std/style.css" rel="stylesheet">
-    <link rel="stylesheet" href="assets/libs/css/style.css">
-    <link rel="stylesheet" href="assets/vendor/fonts/fontawesome/css/fontawesome-all.css">
-    <link rel="stylesheet" href="assets/vendor/charts/chartist-bundle/chartist.css">
-    <link rel="stylesheet" href="assets/vendor/charts/morris-bundle/morris.css">
-    <link rel="stylesheet" href="assets/vendor/fonts/material-design-iconic-font/css/materialdesignicons.min.css">
-    <link rel="stylesheet" href="assets/vendor/charts/c3charts/c3.css">
-    <link rel="stylesheet" href="assets/vendor/fonts/flag-icon-css/flag-icon.min.css">
-    <title>Concept - Bootstrap 4 Admin Dashboard Template</title>
-</head>
+// Check if the page number is specified and check if it's a number, if not return the default page number which is 1.
+$page = isset($_GET['page']) && is_numeric($_GET['page']) ? $_GET['page'] : 1;
 
-<body>
-    <!-- ============================================================== -->
-    <!-- main wrapper -->
-    <!-- ============================================================== -->
-    <div class="dashboard-main-wrapper">
-        <!-- ============================================================== -->
-        <!-- navbar -->
-        <!-- ============================================================== -->
-        <div class="dashboard-header">
-            <nav class="navbar navbar-expand-lg bg-white fixed-top">
-                <a class="navbar-brand" href="index.php">Alibaba Music Store</a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse " id="navbarSupportedContent">
-                    <ul class="navbar-nav ml-auto navbar-right-top">
-                        <li class="nav-item">
-                               <form method="POST" action="search.php">
-                                <div id="custom-search" class="top-search-bar">
-                                <input class="form-control" type="search" name="search"placeholder="Search..">
-                                
-                            </div>
-                            </form>
-                        </li>
-                        <li class="nav-item dropdown notification">
-                            <a class="nav-link nav-icons" href="#" id="navbarDropdownMenuLink1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-fw fa-bell"></i> <span class="indicator"></span></a>
-                            <ul class="dropdown-menu dropdown-menu-right notification-dropdown">
-                                <li>
-                                    <div class="notification-title"> Notification</div>
-                                    <div class="notification-list">
-                                        <div class="list-group">
-                                            <a href="#" class="list-group-item list-group-item-action active">
-                                                <div class="notification-info">
-                                                    <div class="notification-list-user-img"><img src="assets/images/avatar-2.jpg" alt="" class="user-avatar-md rounded-circle"></div>
-                                                    <div class="notification-list-user-block"><span class="notification-list-user-name">Jeremy Rakestraw</span>accepted your invitation to join the team.
-                                                        <div class="notification-date">2 min ago</div>
-                                                    </div>
-                                                </div>
-                                            </a>
-                                            <a href="#" class="list-group-item list-group-item-action">
-                                                <div class="notification-info">
-                                                    <div class="notification-list-user-img"><img src="assets/images/avatar-3.jpg" alt="" class="user-avatar-md rounded-circle"></div>
-                                                    <div class="notification-list-user-block"><span class="notification-list-user-name">Mouhamed amine</span>is now following you
-                                                        <div class="notification-date">2 days ago</div>
-                                                    </div>
-                                                </div>
-                                            </a>
-                                            <a href="#" class="list-group-item list-group-item-action">
-                                                <div class="notification-info">
-                                                    <div class="notification-list-user-img"><img src="assets/images/avatar-4.jpg" alt="" class="user-avatar-md rounded-circle"></div>
-                                                    <div class="notification-list-user-block"><span class="notification-list-user-name">Monaan Pechi</span> is watching your main repository
-                                                        <div class="notification-date">2 min ago</div>
-                                                    </div>
-                                                </div>
-                                            </a>
-                                            <a href="#" class="list-group-item list-group-item-action">
-                                                <div class="notification-info">
-                                                    <div class="notification-list-user-img"><img src="assets/images/avatar-5.jpg" alt="" class="user-avatar-md rounded-circle"></div>
-                                                    <div class="notification-list-user-block"><span class="notification-list-user-name">Jessica Caruso</span>accepted your invitation to join the team.
-                                                        <div class="notification-date">2 min ago</div>
-                                                    </div>
-                                                </div>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="list-footer"> <a href="#">View all notifications</a></div>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="nav-item dropdown connection">
-                            <a class="nav-link" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="fas fa-fw fa-th"></i> </a>
-                            <ul class="dropdown-menu dropdown-menu-right connection-dropdown">
-                                <li class="connection-list">
-                                    <div class="row">
-                                        <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12 ">
-                                            <a href="#" class="connection-item"><img src="assets/images/github.png" alt="" > <span>Github</span></a>
-                                        </div>
-                                        <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12 ">
-                                            <a href="#" class="connection-item"><img src="assets/images/dribbble.png" alt="" > <span>Dribbble</span></a>
-                                        </div>
-                                        <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12 ">
-                                            <a href="#" class="connection-item"><img src="assets/images/dropbox.png" alt="" > <span>Dropbox</span></a>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12 ">
-                                            <a href="#" class="connection-item"><img src="assets/images/bitbucket.png" alt=""> <span>Bitbucket</span></a>
-                                        </div>
-                                        <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12 ">
-                                            <a href="#" class="connection-item"><img src="assets/images/mail_chimp.png" alt="" ><span>Mail chimp</span></a>
-                                        </div>
-                                        <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12 ">
-                                            <a href="#" class="connection-item"><img src="assets/images/slack.png" alt="" > <span>Slack</span></a>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="conntection-footer"><a href="#">More</a></div>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="nav-item dropdown nav-user">
-                            <a class="nav-link nav-user-img" href="#" id="navbarDropdownMenuLink2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img src="assets/images/avatar-1.jpg" alt="" class="user-avatar-md rounded-circle"></a>
-                            <div class="dropdown-menu dropdown-menu-right nav-user-dropdown" aria-labelledby="navbarDropdownMenuLink2">
-                                <div class="nav-user-info">
-                                    <h5 class="mb-0 text-white nav-user-name">Mouhamed amine messaoudi </h5>
-                                    <span class="status"></span><span class="ml-2">Available</span>
-                                </div>
-                                <a class="dropdown-item" href="#"><i class="fas fa-user mr-2"></i>Account</a>
-                                <a class="dropdown-item" href="#"><i class="fas fa-cog mr-2"></i>Setting</a>
-                                <a class="dropdown-item" href="#"><i class="fas fa-power-off mr-2"></i>Logout</a>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-            </nav>
-        </div>
-        <!-- ============================================================== -->
-        <!-- end navbar -->
-        <!-- ============================================================== -->
-        <!-- ============================================================== -->
-        <!-- left sidebar -->
-        <!-- ============================================================== -->
-        <div class="nav-left-sidebar sidebar-dark">
-            <div class="menu-list">
-                <nav class="navbar navbar-expand-lg navbar-light">
-                    <a class="d-xl-none d-lg-none" href="#">Stock</a>
-                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
-                    <div class="collapse navbar-collapse" id="navbarNav">
-                        <ul class="navbar-nav flex-column">
-                            <li class="nav-divider">
-                                Menu
-                            </li>
-                            <li class="nav-item ">
-                                <a class="nav-link active" href="#" data-toggle="collapse" aria-expanded="false" data-target="#submenu-1" aria-controls="submenu-1"><i class="fa fa-fw fa-user-circle"></i>Stock<span class="badge badge-success">6</span></a>
-                                <div id="submenu-1" class="collapse submenu" style="">
-                                    <ul class="nav flex-column">
-                                        <li class="nav-item">
-                                           
-                                                <ul class="nav flex-column">
-                                                    <li class="nav-item">
-                                                        <a class="nav-link" href="listeP.php">Afficher la liste des Produits</a>
-                                                    </li>
-                                                    <li class="nav-item">
-                                                        <a class="nav-link" href="ajout.php">Ajouter Produit</a>
-                                                    </li>
-                                                    <li class="nav-item">
-                                                        <a class="nav-link" href="modifierP.php">Modifier Produit</a>
-                                                    </li>
-                                                    <li class="nav-item">
-                                                        <a class="nav-link" href="supprimerP.php">Supprimer Produit</a>
-                                                    </li>
-                                                  
-                                                </ul>
-                                            
-                                        </li>
-                                        
-                                        
-                                        
-                                    </ul>
-                                </div>
-                            </li>
-                          
-                          
-                            
-                            
-                            
-                               <li class="nav-item">
-                                <a class="nav-link active" href="#" data-toggle="collapse" aria-expanded="false" data-target="#submenu-6" aria-controls="submenu-6"><i class="fa fa-fw fa-user-circle"></i>Catégorie<span class="badge badge-success">6</span></a>
-                                <div id="submenu-6" class="collapse submenu" style="">
-                                    <ul class="nav flex-column">
-                                         <li class="nav-item">
-                                            <a class="nav-link" href="afficherPr.php">Afficher la liste des catégories</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="ajoutC.php">Ajouter Catégorie</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="modifierC.php">Modifier Catégorie</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="afficherC.php">Supprimer Catégorie</a>
-                                        </li>
-                                        
-                                       
-                                        
-                                    </ul>
-                                </div>
-                            </li>
-                         
-                           
-                           
-                        </ul>
-                    </div>
-                </nav>
-            </div>
-        </div>
-        <!-- ============================================================== -->
-        <!-- end left sidebar -->
-        <!-- ============================================================== -->
-        <!-- ============================================================== -->
-        <!-- wrapper  -->
-        <!-- ============================================================== -->
-        <div class="dashboard-wrapper">
-            <div class="dashboard-ecommerce">
-                <div class="container-fluid dashboard-content ">
-                    <!-- ============================================================== -->
-                    <!-- pageheader  -->
-                    <!-- ============================================================== -->
-                    <div class="row">
-                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-                            <div class="page-header">
-                                <h2 class="pageheader-title">E-commerce Dashboard Template </h2>
-                                <p class="pageheader-text">Nulla euismod urna eros, sit amet scelerisque torton lectus vel mauris facilisis faucibus at enim quis massa lobortis rutrum.</p>
-                                <div class="page-breadcrumb">
-                                    <nav aria-label="breadcrumb">
-                                        <ol class="breadcrumb">
-                                            <li class="breadcrumb-item"><a href="#" class="breadcrumb-link">Stock</a></li>
-                                            <li class="breadcrumb-item active" aria-current="page">E-Commerce Dashboard Template</li>
-                                        </ol>
-                                    </nav>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- ============================================================== -->
-                    <!-- end pageheader  -->
-                    <!-- ============================================================== -->
-                    <div class="ecommerce-widget">
-
-                       
-                        <div class="row">
-                            <!-- ============================================================== -->
-                      
-                            <!-- ============================================================== -->
-
-                                          <!-- recent orders  -->
-                            <!-- ============================================================== -->
-                            <div class="col-xl-9 col-lg-12 col-md-6 col-sm-12 col-12">
-                                <div class="card">
-                                    <h5 class="card-header">Liste des produits</h5>
-                                    <div class="card-body p-0">
-                                        <div class="table-responsive">
-                                            <table class="table">
-                                                <thead class="bg-light">
-                                                    <tr class="border-0">
-                                                        <th></th>
-                                                        <th class="border-0">Référence</th>
-                                                        <th class="border-0">Nom produit</th>
-                                                        <th class="border-0">Marque</th>
-                                                        <th class="border-0">Quantité</th>
-                                                        <th class="border-0">Prix</th>
-                                                        <th class="border-0">Date d'ajout</th>
-                                                        <th class="border-0">Référence catégorie</th>
-                                                        
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <?PHP
-foreach($liste as $row){
-    ?>
-    <tr>
-   <td><img src="<?php echo $row['urlimage']?>" width="100" height="100"></td>
-    <td><?PHP echo $row['refproduit']; ?></td>
-    <td><?PHP echo $row['nomproduit']; ?></td>
-    <td><?PHP echo $row['marque']; ?></td>
-    <td><?PHP echo $row['quantite']; ?></td>
-    <td><?PHP echo $row['prixproduit']; ?></td>
-    <td><?PHP echo $row['dateajout']; ?></td>
-    <td><?PHP echo $row['refcategorie']; ?></td>
-    <?PHP
+// Number of results to show on each page.
+$num_results_on_page = 2;
+if ($stmt = $mysqli->prepare('SELECT * FROM produit ORDER BY nomproduit LIMIT ?,?')) {
+	// Calculate the page to get the results we need from our table.
+	$calc_page = ($page - 1) * $num_results_on_page;
+	$stmt->bind_param('ii', $calc_page, $num_results_on_page);
+	$stmt->execute(); 
+	// Get the results...
+	$result = $stmt->get_result();
+	$stmt->close();
 }
 ?>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- ============================================================== -->
-                            <!-- end recent orders  -->
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<style>
+			.pagination {
+				list-style-type: none;
+				padding: 10px 0;
+				display: inline-flex;
+				justify-content: space-between;
+				box-sizing: border-box;
+			}
+			.pagination li {
+				box-sizing: border-box;
+				padding-right: 10px;
+			}
+			.pagination li a {
+				box-sizing: border-box;
+				background-color: #e2e6e6;
+				padding: 8px;
+				text-decoration: none;
+				font-size: 12px;
+				font-weight: bold;
+				color: #616872;
+				border-radius: 4px;
+			}
+			.pagination li a:hover {
+				background-color: #d4dada;
+			}
+			.pagination .next a, .pagination .prev a {
+				text-transform: uppercase;
+				font-size: 12px;
+			}
+			.pagination .currentpage a {
+				background-color: #518acb;
+				color: #fff;
+			}
+			.pagination .currentpage a:hover {
+				background-color: #518acb;
+			}
+			</style>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		 <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 
-    
-                            <!-- ============================================================== -->
-                            <!-- ============================================================== -->
-                            <!-- customer acquistion  -->
-                            <!-- ============================================================== -->
-                            <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12">
-                            
-                            <!-- ============================================================== -->
-                            <!-- end customer acquistion  -->
-                            <!-- ============================================================== -->
-                        </div>
-                        <div class="row">
-                            <!-- ============================================================== -->
-              				                        <!-- product category  -->
-                            <!-- ============================================================== -->
-                           
-                            <!-- ============================================================== -->
-                            <!-- end product category  -->
-                                   <!-- product sales  -->
-                            <!-- ============================================================== -->
-                            
-                            <!-- ============================================================== -->
-                            <!-- end product sales  -->
-                            <!-- ============================================================== -->
-                            <div class="col-xl-3 col-lg-12 col-md-6 col-sm-12 col-12">
-                                <!-- ============================================================== -->
-                                <!-- top perfomimg  -->
-                                <!-- ============================================================== -->
-                               
-                                <!-- ============================================================== -->
-                                <!-- end top perfomimg  -->
-                                <!-- ============================================================== -->
-                            </div>
-                        </div>
+		<title>Electro - HTML Ecommerce Template</title>
 
-                        <div class="row">
-                            <!-- ============================================================== -->
-                            <!-- sales  -->
-                            <!-- ============================================================== -->
-                            
-                            <!-- ============================================================== -->
-                            <!-- end sales  -->
-                            <!-- ============================================================== -->
-                            <!-- ============================================================== -->
-                            <!-- new customer  -->
-                            <!-- ============================================================== -->
-                          
-                            <!-- ============================================================== -->
-                            <!-- end new customer  -->
-                            <!-- ============================================================== -->
-                            <!-- ============================================================== -->
-                            <!-- visitor  -->
-                            <!-- ============================================================== -->
-                            
-                            <!-- ============================================================== -->
-                            <!-- end visitor  -->
-                            <!-- ============================================================== -->
-                            <!-- ============================================================== -->
-                            <!-- total orders  -->
-                            <!-- ============================================================== -->
-                            
-                            <!-- ============================================================== -->
-                            <!-- end total orders  -->
-                            <!-- ============================================================== -->
-                        </div>
-                        <div class="row">
-                            <!-- ============================================================== -->
-                            <!-- total revenue  -->
-                            <!-- ============================================================== -->
+ 		<!-- Google font -->
+ 		<link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700" rel="stylesheet">
+
+ 		<!-- Bootstrap -->
+ 		<link type="text/css" rel="stylesheet" href="css/bootstrap.min.css"/>
+
+ 		<!-- Slick -->
+ 		<link type="text/css" rel="stylesheet" href="css/slick.css"/>
+ 		<link type="text/css" rel="stylesheet" href="css/slick-theme.css"/>
+
+ 		<!-- nouislider -->
+ 		<link type="text/css" rel="stylesheet" href="css/nouislider.min.css"/>
+
+ 		<!-- Font Awesome Icon -->
+ 		<link rel="stylesheet" href="css/font-awesome.min.css">
+
+ 		<!-- Custom stlylesheet -->
+ 		<link type="text/css" rel="stylesheet" href="css/style.css"/>
+
+		<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+		<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+		<!--[if lt IE 9]>
+		  <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+		  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+		<![endif]-->
+
+    </head>
+	<body>
+		<!-- HEADER -->
+		<header>
+			<!-- TOP HEADER -->
+			<div id="top-header">
+				<div class="container">
+					<ul class="header-links pull-left">
+						<li><a href="#"><i class="fa fa-phone"></i> +021-95-51-84</a></li>
+						<li><a href="#"><i class="fa fa-envelope-o"></i> email@email.com</a></li>
+						<li><a href="#"><i class="fa fa-map-marker"></i> 1734 Stonecoal Road</a></li>
+					</ul>
+					<ul class="header-links pull-right">
+						<li><a href="#"><i class="fa fa-dollar"></i> USD</a></li>
+						<li><a href="http://localhost/7amma/Nouveau%20dossier/login.php"><i class="fa fa-user-o"></i> My Account</a></li>
+					</ul>
+				</div>
+			</div>
+			<!-- /TOP HEADER -->
+
+			<!-- MAIN HEADER -->
+			<div id="header">
+				<!-- container -->
+				<div class="container">
+					<!-- row -->
+					<div class="row">
+						<!-- LOGO -->
+						<div class="col-md-3">
+							<div class="header-logo">
+								<a href="#" class="logo">
+									<img src="./img/logo.png" alt="">
+								</a>
+							</div>
+						</div>
+						<!-- /LOGO -->
+                          <?php
+
+
+try
+{
+ $bdd = new PDO("mysql:host=localhost;dbname=alibaba", "root", "");
+ $bdd ->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+}
+catch(Exception $e)
+{
+  die("Une érreur a été trouvé : " . $e->getMessage());
+}
+$bdd->query("SET NAMES UTF8");
+
+if (isset($_GET['s']) AND $_GET["s"] == "Search")
+{
   
-                            
-                            <!-- ============================================================== -->
-                            <!-- ============================================================== -->
-                            <!-- category revenue  -->
-                            <!-- ============================================================== -->
-                           
-                            <!-- ============================================================== -->
-                            <!-- end category revenue  -->
-                            <!-- ============================================================== -->
-
-                          
-                        </div>
-                        <div class="row">
-                            <div class="col-xl-5 col-lg-6 col-md-6 col-sm-12 col-12">
-                                <!-- ============================================================== -->
-                                <!-- social source  -->
-                                <!-- ============================================================== -->
-                               
-                                <!-- ============================================================== -->
-                                <!-- end social source  -->
-                                <!-- ============================================================== -->
-                            </div>
-                            <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12 col-12">
-                                <!-- ============================================================== -->
-                                <!-- sales traffice source  -->
-                                <!-- ============================================================== -->
-                                
-                            <!-- ============================================================== -->
-                            <!-- end sales traffice source  -->
-                            <!-- ============================================================== -->
-                            <!-- ============================================================== -->
-                            <!-- sales traffic country source  -->
-                            <!-- ============================================================== -->
-                            
-                            <!-- ============================================================== -->
-                            <!-- end sales traffice country source  -->
-                            <!-- ============================================================== -->
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- ============================================================== -->
-            <!-- footer -->
-            <!-- ============================================================== -->
-            <div class="footer">
-                <div class="container-fluid">
-                    <div class="row">
-                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
-                             Copyright © 2018 Concept. All rights reserved. Dashboard by <a href="https://colorlib.com/wp/">Colorlib</a>.
-                        </div>
-                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
-                            <div class="text-md-right footer-links d-none d-sm-block">
-                                <a href="javascript: void(0);">About</a>
-                                <a href="javascript: void(0);">Support</a>
-                                <a href="javascript: void(0);">Contact Us</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- ============================================================== -->
-            <!-- end footer -->
-            <!-- ============================================================== -->
-        </div>
-        <!-- ============================================================== -->
-        <!-- end wrapper  -->
-        <!-- ============================================================== -->
-    </div>
-    <!-- ============================================================== -->
-    <!-- end main wrapper  -->
-    <!-- ============================================================== -->
-    <!-- Optional JavaScript -->
-    <!-- jquery 3.3.1 -->
-    <script src="assets/vendor/jquery/jquery-3.3.1.min.js"></script>
-    <!-- bootstap bundle js -->
-    <script src="assets/vendor/bootstrap/js/bootstrap.bundle.js"></script>
-    <!-- slimscroll js -->
-    <script src="assets/vendor/slimscroll/jquery.slimscroll.js"></script>
-    <!-- main js -->
-    <script src="assets/libs/js/main-js.js"></script>
-    <!-- chart chartist js -->
-    <script src="assets/vendor/charts/chartist-bundle/chartist.min.js"></script>
-    <!-- sparkline js -->
-    <script src="assets/vendor/charts/sparkline/jquery.sparkline.js"></script>
-    <!-- morris js -->
-    <script src="assets/vendor/charts/morris-bundle/raphael.min.js"></script>
-    <script src="assets/vendor/charts/morris-bundle/morris.js"></script>
-    <!-- chart c3 js -->
-    <script src="assets/vendor/charts/c3charts/c3.min.js"></script>
-    <script src="assets/vendor/charts/c3charts/d3-5.4.0.min.js"></script>
-    <script src="assets/vendor/charts/c3charts/C3chartjs.js"></script>
-    <script src="assets/libs/js/dashboard-ecommerce.js"></script>
-</body>
+ $_GET["terme"] = htmlspecialchars($_GET["terme"]); //pour sécuriser le formulaire contre les intrusions html
+ $terme = $_GET['terme'];
  
+
+ if (isset($terme))
+ {
+
+  $terme = strtolower($terme);
+  $select_terme = $bdd->prepare("SELECT urlimage,refproduit,nomproduit,marque,quantite,prixproduit,dateajout,refcategorie FROM produit WHERE nomproduit LIKE ? OR prixproduit LIKE ? or quantite LIKE ?");
+  $select_terme->execute(array("%".$terme."%", "%".$terme."%","%".$terme."%"));
+
+ }
+ else
+ {
+  $message = "Vous devez entrer votre requete dans la barre de recherche";
+ }
+}
+else
+{
+  $select_terme = $bdd->prepare("SELECT * FROM produit ");
+  $select_terme->execute(array("%","%","%","%","%","%","%"));
+ 
+}
+?>
+						<!-- SEARCH BAR -->
+						<div class="col-md-6">
+							<div class="header-search">
+								<form action="rechercherProduit.php" method="GET">
+									<select class="input-select">
+										<option value="0">All Categories</option>
+										<option value="1">Category 01</option>
+										<option value="1">Category 02</option>
+									</select>
+									<input class="input" placeholder="Search here" name="terme">
+									<input type="submit" name="s" value="Search" class="search-btn">
+								</form>
+							</div>
+						</div>
+						<!-- /SEARCH BAR -->
+
+						<!-- ACCOUNT -->
+						<div class="col-md-3 clearfix">
+							<div class="header-ctn">
+								<!-- Wishlist -->
+								<div>
+									<a href="#">
+										<i class="fa fa-heart-o"></i>
+										<span>Your Wishlist</span>
+										<div class="qty">2</div>
+									</a>
+								</div>
+								<!-- /Wishlist -->
+
+								
+
+								<!-- Menu Toogle -->
+								<div class="menu-toggle">
+									<a href="#">
+										<i class="fa fa-bars"></i>
+										<span>Menu</span>
+									</a>
+								</div>
+								<!-- /Menu Toogle -->
+							</div>
+						</div>
+						<!-- /ACCOUNT -->
+					</div>
+					<!-- row -->
+				</div>
+				<!-- container -->
+			</div>
+			<!-- /MAIN HEADER -->
+		</header>
+		<!-- /HEADER -->
+
+		<!-- NAVIGATION -->
+		<nav id="navigation">
+			<!-- container -->
+			<div class="container">
+				<!-- responsive-nav -->
+				<div id="responsive-nav">
+					<!-- NAV -->
+					<ul class="main-nav nav navbar-nav">
+						<li class="active"><a href="index.html">Home</a></li>
+						<li><a href="store.html">Hot Deals</a></li>
+						<li><a href="#">Categories</a></li>
+						<li><a href="#">Categ1</a></li>
+						<li><a href="#">Categ2</a></li>
+						<li><a href="#">Categ3</a></li>
+						<li><a href="#">Categ4</a></li>
+					</ul>
+					<!-- /NAV -->
+				</div>
+				<!-- /responsive-nav -->
+			</div>
+			<!-- /container -->
+		</nav>
+		<!-- /NAVIGATION -->
+
+		<!-- BREADCRUMB -->
+		<div id="breadcrumb" class="section">
+			<!-- container -->
+			<div class="container">
+				<!-- row -->
+				<div class="row">
+					<div class="col-md-12">
+						<ul class="breadcrumb-tree">
+							<li><a href="index.html">Home</a></li>
+							<li><a href="#">All Categories</a></li>
+							<li><a href="#">Categ1</a></li>
+							<li class="active">Categ2 (227,490 Results)</li>
+						</ul>
+					</div>
+				</div>
+				<!-- /row -->
+			</div>
+			<!-- /container -->
+		</div>
+		<!-- /BREADCRUMB -->
+
+		<!-- SECTION -->
+		<div class="section">
+			<!-- container -->
+			<div class="container">
+				<!-- row -->
+				<div class="row">
+					<!-- ASIDE -->
+					<div id="aside" class="col-md-3">
+						<!-- aside Widget -->
+						<h3 class="aside-title">Categories</h3>
+						<form method="GET" action="afficherparcategorie.php">
+						<div class="aside">
+							<?php
+                        include "../../core/categorieC.php";
+                        $categoriec=new categorieC();
+                        $listecat=$categoriec->affichercategories();
+                        foreach ($listecat as $pr) {
+                        	
+                        
+						?>
+							
+							<div class="checkbox-filter">
+
+								<div class="input-checkbox">
+									
+									<a href="afficherparcategorie.php">
+									<label for="category-1">
+										<span></span>
+										
+										<?php echo $pr['nomcategorie'];?>
+									</label>
+								</a>
+								</div>
+
+							</div>
+						
+						<?php
+					}
+					?></div>
+				</form>
+						<!-- /aside Widget -->
+
+						<!-- aside Widget -->
+						<div class="aside">
+						
+						</div>
+						<!-- /aside Widget -->
+
+						<!-- aside Widget -->
+						<div class="aside">
+							
+						</div>
+						<!-- /aside Widget -->
+
+						<!-- aside Widget -->
+						<div class="aside">
+							
+						</div>
+						<!-- /aside Widget -->
+					</div>
+					<!-- /ASIDE -->
+
+					<!-- STORE -->
+					<div id="store" class="col-md-9">
+						<!-- store top filter -->
+						<div class="store-filter clearfix">
+							<div class="store-sort">
+								<label>
+									Trier par prix:
+									<select class="input-select" size="1" onChange="location = this.options[this.selectedIndex].value;">
+										<option value="afficherproduitFront.php?afficherproduitFront=1">Default</option>
+										<option value="afficherproduitFront.php?ProduitsTries=1">Le moins cher</option>
+										<option value="afficherproduitFront.php?ProduitsTriesDesc=1">Le plus cher</option>
+										<option value="afficherproduitFront.php?ProduitsTriesqteDESC=1">moins de quantité</option>
+										<option value="afficherproduitFront.php?ProduitsTriesqteASC=1">plus de quantité</option>
+										<option value="afficherproduitFront.php?ProduitsTriesA=1"> A-Z</option>
+										<option value="afficherproduitFront.php?ProduitsTriesZ=1">Z-A</option>
+									</select>
+								</label>
+
+								
+							</div>
+							
+						</div>
+						<!-- /store top filter -->
+
+						<!-- store products -->
+						<?php 
+						
+						/*if (isset($_GET['search']))
+	{  $liste = $produitc->rechercherProduits($_GET['search']);
+	 //$result = $produitc->afficherModifierProduit($_GET['idProduit']); 
+
+	 }
+	  else*/ if(isset($_GET['ProduitsTriesqteDESC']))
+	 {
+	 	$liste = $produitc->trierproduitqteDESC();
+	 }
+	  else if(isset($_GET['ProduitsTriesqteASC']))
+	 {
+	 	$liste = $produitc->trierproduitqteDESC();
+	 }
+	 else if(isset($_GET['ProduitsTries']))
+	 {
+	 	$liste = $produitc->triPrix();
+	 }
+	 else if(isset($_GET['ProduitsTriesA']))
+	 {
+	 	$liste = $produitc->triPrixA();
+	 }
+	 else if(isset($_GET['ProduitsTriesZ']))
+	 {
+	 	$liste = $produitc->triPrixZ();
+	 }
+	 else if(isset($_GET['ProduitsTriesDesc']))
+	 {
+	 	$liste = $produitc->triPrixDesc(); 
+	 }
+	 else
+	  {  $liste = $produitc->afficherproduits(); 
+
+	  }
+
+ ?>
+<?php while ($row = $result->fetch_assoc()){ ?>
+						<!--<div class="row">-->
+
+							<!-- product -->
+							<div class="col-md-4 col-xs-6">
+								<div class="product">
+									<div class="product-img">
+										<img src="../back/<?php echo $row['urlimage'];?>">
+										
+									</div>
+									<div class="product-body">
+										
+											<h3 class="product-name"> <?php echo $row['nomproduit'];?></h3>
+										<p class="product-category"><?php //echo $row1['nomcategorie'];?></p>
+										<h2 class="product-price">
+											<?php echo $row['quantite'];?> Instrument(s)
+										</h2>
+												<h4 class="product-price"> <?php echo $row['prixproduit'];?>DT</h4>
+										
+										<div class="product-rating">
+											<i class="fa fa-star"></i>
+											<i class="fa fa-star"></i>
+											<i class="fa fa-star"></i>
+											<i class="fa fa-star"></i>
+											<i class="fa fa-star"></i>
+										</div>
+										<div class="product-btns">
+											<button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span class="tooltipp">add to wishlist</span></button>
+											<button class="add-to-compare"><i class="fa fa-exchange"></i><span class="tooltipp">add to compare</span></button>
+											
+												<a href="details.php?<?php echo $row['refproduit']?>">
+											<button class="quick-view"><i class="fa fa-eye"></i><span class="tooltipp">quick view</span></button></a>
+											
+											
+										</div>
+									</div>
+									<div class="add-to-cart">
+										<button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to cart</button>
+									</div>
+								</div>
+							</div>
+										<?php
+					}?>
+								<?php if (ceil($total_pages / $num_results_on_page) > 0): ?>
+							
+							<ul class="store-pagination">
+				<?php if ($page > 1): ?>
+				<li class="prev"><a href="index.php?page=<?php echo $page-1 ?>">Prev</a></li>
+				<?php endif; ?>
+
+				<?php if ($page > 3): ?>
+				<li class="start"><a href="index.php?page=1">1</a></li>
+				<li class="dots">...</li>
+				<?php endif; ?>
+
+				<?php if ($page-2 > 0): ?><li class="page"><a href="index.php?page=<?php echo $page-2 ?>"><?php echo $page-2 ?></a></li><?php endif; ?>
+				<?php if ($page-1 > 0): ?><li class="page"><a href="index.php?page=<?php echo $page-1 ?>"><?php echo $page-1 ?></a></li><?php endif; ?>
+
+				<li class="currentpage"><a href="index.php?page=<?php echo $page ?>"><?php echo $page ?></a></li>
+
+				<?php if ($page+1 < ceil($total_pages / $num_results_on_page)+1): ?><li class="page"><a href="index.php?page=<?php echo $page+1 ?>"><?php echo $page+1 ?></a></li><?php endif; ?>
+				<?php if ($page+2 < ceil($total_pages / $num_results_on_page)+1): ?><li class="page"><a href="index.php?page=<?php echo $page+2 ?>"><?php echo $page+2 ?></a></li><?php endif; ?>
+
+				<?php if ($page < ceil($total_pages / $num_results_on_page)-2): ?>
+				<li class="dots">...</li>
+				<li class="end"><a href="index.php?page=<?php echo ceil($total_pages / $num_results_on_page) ?>"><?php echo ceil($total_pages / $num_results_on_page) ?></a></li>
+				<?php endif; ?>
+
+				<?php if ($page < ceil($total_pages / $num_results_on_page)): ?>
+				<li class="next"><a href="index.php?page=<?php echo $page+1 ?>">Next</a></li>
+				<?php endif; ?>
+			</ul>
+						
+			
+		
+			<?php endif; ?>
+		
+							<div class="clearfix visible-sm visible-xs"></div>
+							<!-- /product -->
+
+							<!-- product -->
+							
+							<!-- /product -->
+						<!--</div>-->
+					
+						
+					</div>
+				</div>
+						<!-- /store products -->
+
+						<!-- store bottom filter -->
+						
+						<!-- /store bottom filter -->
+					</div>
+					<!-- /STORE -->
+				</div>
+				<!-- /row -->
+			</div>
+			<!-- /container -->
+		</div>
+
+		<!-- /SECTION -->
+
+		<!-- NEWSLETTER -->
+		<div id="newsletter" class="section">
+			<!-- container -->
+			<div class="container">
+				<!-- row -->
+				<div class="row">
+					<div class="col-md-12">
+						<div class="newsletter">
+							<p>Sign Up for the <strong>NEWSLETTER</strong></p>
+							<form>
+								<input class="input" type="email" placeholder="Enter Your Email">
+								<button class="newsletter-btn"><i class="fa fa-envelope"></i> Subscribe</button>
+							</form>
+							<ul class="newsletter-follow">
+								<li>
+									<a href="#"><i class="fa fa-facebook"></i></a>
+								</li>
+								<li>
+									<a href="#"><i class="fa fa-twitter"></i></a>
+								</li>
+								<li>
+									<a href="#"><i class="fa fa-instagram"></i></a>
+								</li>
+								<li>
+									<a href="#"><i class="fa fa-pinterest"></i></a>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+				<!-- /row -->
+			</div>
+			<!-- /container -->
+		</div>
+		<!-- /NEWSLETTER -->
+
+		<!-- FOOTER -->
+		<footer id="footer">
+			<!-- top footer -->
+			<div class="section">
+				<!-- container -->
+				<div class="container">
+					<!-- row -->
+					<div class="row">
+						<div class="col-md-3 col-xs-6">
+							<div class="footer">
+								<h3 class="footer-title">About Us</h3>
+								<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut.</p>
+								<ul class="footer-links">
+									<li><a href="#"><i class="fa fa-map-marker"></i>1734 Stonecoal Road</a></li>
+									<li><a href="#"><i class="fa fa-phone"></i>+021-95-51-84</a></li>
+									<li><a href="#"><i class="fa fa-envelope-o"></i>email@email.com</a></li>
+								</ul>
+							</div>
+						</div>
+
+						<div class="col-md-3 col-xs-6">
+							<div class="footer">
+								<h3 class="footer-title">Categories</h3>
+								<ul class="footer-links">
+									<li><a href="#">Hot deals</a></li>
+									<li><a href="#">Laptops</a></li>
+									<li><a href="#">Smartphones</a></li>
+									<li><a href="#">Cameras</a></li>
+									<li><a href="#">Accessories</a></li>
+								</ul>
+							</div>
+						</div>
+
+						<div class="clearfix visible-xs"></div>
+
+						<div class="col-md-3 col-xs-6">
+							<div class="footer">
+								<h3 class="footer-title">Information</h3>
+								<ul class="footer-links">
+									<li><a href="#">About Us</a></li>
+									<li><a href="#">Contact Us</a></li>
+									<li><a href="#">Privacy Policy</a></li>
+									<li><a href="#">Orders and Returns</a></li>
+									<li><a href="#">Terms & Conditions</a></li>
+								</ul>
+							</div>
+						</div>
+
+						<div class="col-md-3 col-xs-6">
+							<div class="footer">
+								<h3 class="footer-title">Service</h3>
+								<ul class="footer-links">
+									<li><a href="#">My Account</a></li>
+									<li><a href="#">View Cart</a></li>
+									<li><a href="#">Wishlist</a></li>
+									<li><a href="#">Track My Order</a></li>
+									<li><a href="#">Help</a></li>
+								</ul>
+							</div>
+						</div>
+					</div>
+					<!-- /row -->
+				</div>
+				<!-- /container -->
+			</div>
+			<!-- /top footer -->
+
+			<!-- bottom footer -->
+			<div id="bottom-footer" class="section">
+				<div class="container">
+					<!-- row -->
+					<div class="row">
+						<div class="col-md-12 text-center">
+							<ul class="footer-payments">
+								<li><a href="#"><i class="fa fa-cc-visa"></i></a></li>
+								<li><a href="#"><i class="fa fa-credit-card"></i></a></li>
+								<li><a href="#"><i class="fa fa-cc-paypal"></i></a></li>
+								<li><a href="#"><i class="fa fa-cc-mastercard"></i></a></li>
+								<li><a href="#"><i class="fa fa-cc-discover"></i></a></li>
+								<li><a href="#"><i class="fa fa-cc-amex"></i></a></li>
+							</ul>
+							<span class="copyright">
+								<!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+								Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="fa fa-heart-o" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
+							<!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+							</span>
+						</div>
+					</div>
+						<!-- /row -->
+				</div>
+				<!-- /container -->
+			</div>
+			<!-- /bottom footer -->
+		</footer>
+		<!-- /FOOTER -->
+
+		<!-- jQuery Plugins -->
+		<script src="js/jquery.min.js"></script>
+		<script src="js/bootstrap.min.js"></script>
+		<script src="js/slick.min.js"></script>
+		<script src="js/nouislider.min.js"></script>
+		<script src="js/jquery.zoom.min.js"></script>
+		<script src="js/main.js"></script>
+
+	</body>
 </html>
+<?php $stmt->close();?>

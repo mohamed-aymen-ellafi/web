@@ -1,5 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
+<?php
+$mysqli = mysqli_connect('localhost', 'root', '', 'alibaba');// Get the total number of records from our table "students".
+$total_pages = $mysqli->query('SELECT COUNT(*) FROM produit')->fetch_row()[0];
+
+// Check if the page number is specified and check if it's a number, if not return the default page number which is 1.
+$page = isset($_GET['page']) && is_numeric($_GET['page']) ? $_GET['page'] : 1;
+
+// Number of results to show on each page.
+$num_results_on_page = 2;
+if ($stmt = $mysqli->prepare('SELECT * FROM produit ORDER BY nomproduit LIMIT ?,?')) {
+	// Calculate the page to get the results we need from our table.
+	$calc_page = ($page - 1) * $num_results_on_page;
+	$stmt->bind_param('ii', $calc_page, $num_results_on_page);
+	$stmt->execute(); 
+	// Get the results...
+	$result = $stmt->get_result();
+	$stmt->close();
+}
+?>
 	<head>
 		<meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -69,19 +88,58 @@
 							</div>
 						</div>
 						<!-- /LOGO -->
+                          <?php
 
+
+try
+{
+ $bdd = new PDO("mysql:host=localhost;dbname=alibaba", "root", "");
+ $bdd ->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+}
+catch(Exception $e)
+{
+  die("Une érreur a été trouvé : " . $e->getMessage());
+}
+$bdd->query("SET NAMES UTF8");
+
+if (isset($_GET['s']) AND $_GET["s"] == "Search")
+{
+  
+ $_GET["terme"] = htmlspecialchars($_GET["terme"]); //pour sécuriser le formulaire contre les intrusions html
+ $terme = $_GET['terme'];
+ 
+
+ if (isset($terme))
+ {
+
+  $terme = strtolower($terme);
+  $select_terme = $bdd->prepare("SELECT urlimage,refproduit,nomproduit,marque,quantite,prixproduit,dateajout,refcategorie FROM produit WHERE nomproduit LIKE ? OR prixproduit LIKE ? or quantite LIKE ?");
+  $select_terme->execute(array("%".$terme."%", "%".$terme."%","%".$terme."%"));
+
+ }
+ else
+ {
+  $message = "Vous devez entrer votre requete dans la barre de recherche";
+ }
+}
+else
+{
+  $select_terme = $bdd->prepare("SELECT * FROM produit ");
+  $select_terme->execute(array("%","%","%","%","%","%","%"));
+ 
+}
+?>
 						<!-- SEARCH BAR -->
 						<div class="col-md-6">
 							<div class="header-search">
-								<form action="rechercherProduit.php" method="post">
+								<form action="rechercherProduit.php" method="GET">
 									<select class="input-select">
 										<option value="0">All Categories</option>
 										<option value="1">Category 01</option>
 										<option value="1">Category 02</option>
 									</select>
-									<input class="input" placeholder="Search here" name="search" required="">
-									<!--<input hidden="hidden" name="nomproduit" value="<?php //echo $result->nomproduit ?>" name="">-->
-									<button class="search-btn">Search</button>
+									<input class="input" placeholder="Search here" name="terme">
+									<input type="submit" name="s" value="Search" class="search-btn">
 								</form>
 							</div>
 						</div>
@@ -176,7 +234,7 @@
 					<!-- ASIDE -->
 					<div id="aside" class="col-md-3">
 						<!-- aside Widget -->
-						
+						<h3 class="aside-title">Categories</h3>
 						<div class="aside">
 							<?php
                         include "../../core/categorieC.php";
@@ -186,11 +244,11 @@
                         	
                         
 						?>
-							<h3 class="aside-title">Categories</h3>
+							
 							<div class="checkbox-filter">
 
 								<div class="input-checkbox">
-									<input type="checkbox" id="category-1">
+									
 									<label for="category-1">
 										<span></span>
 										
@@ -251,15 +309,15 @@
 
 						<!-- store products -->
 						<?php 
-						include_once "../../core/produitC.php";
+						include "../../core/produitC.php";
 						$produitc=new produitC();
-						if (isset($_GET['search']))
+						/*if (isset($_GET['search']))
 	{  $liste = $produitc->rechercherProduits($_GET['search']);
 	 //$result = $produitc->afficherModifierProduit($_GET['idProduit']); 
 
 	 
 	 }
-	  else if(isset($_GET['ProduitsTriesqteDESC']))
+	  else*/ if(isset($_GET['ProduitsTriesqteDESC']))
 	 {
 	 	$liste = $produitc->trierproduitqteDESC();
 	 }
@@ -291,38 +349,24 @@
  ?>
 
 
-                        							<?php
-//include "../../core/produitC.php";
-//include "../../core/categorieC.php";
-//$produitc=new produitC();
-//$liste=$produitc->afficherproduits();
-//$categoriec=new categorieC();
-//$listecat=$categoriec->affichercategories();
-
-									
-									//foreach ($listecat as $row1) {
-
-										foreach ($liste as $row) {
-											
-										
-									
-									?>
+<?php while ($row = $result->fetch_assoc()){ ?>
 						<!--<div class="row">-->
 
 							<!-- product -->
 							<div class="col-md-4 col-xs-6">
 								<div class="product">
 									<div class="product-img">
-										<img src="../back/<?php echo $row->urlimage;?>">
+										<img src="../back/<?php echo $row['urlimage'];?>">
 										
 									</div>
 									<div class="product-body">
-											<h3 class="product-name"> <?php echo $row->nomproduit;?></h3>
+										
+											<h3 class="product-name"> <?php echo $row['nomproduit'];?></h3>
 										<p class="product-category"><?php //echo $row1['nomcategorie'];?></p>
 										<h2 class="product-price">
-											<?php echo $row->quantite;?> Instrument(s)
+											<?php echo $row['quantite'];?> Instrument(s)
 										</h2>
-												<h4 class="product-price"> <?php echo $row->prixproduit;?>DT</h4>
+												<h4 class="product-price"> <?php echo $row['prixproduit'];?>DT</h4>
 										
 										<div class="product-rating">
 											<i class="fa fa-star"></i>
@@ -334,8 +378,11 @@
 										<div class="product-btns">
 											<button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span class="tooltipp">add to wishlist</span></button>
 											<button class="add-to-compare"><i class="fa fa-exchange"></i><span class="tooltipp">add to compare</span></button>
-											<!--<a href="details.php" class="quick-view">
-											<button class="quick-view"><i class="fa fa-eye"></i><span class="tooltipp">quick view</span></button></a>-->
+											
+												<a href="details.php?<?php echo $row['refproduit']?>">
+											<button class="quick-view"><i class="fa fa-eye"></i><span class="tooltipp">quick view</span></button></a>
+											
+											
 										</div>
 									</div>
 									<div class="add-to-cart">
@@ -343,6 +390,42 @@
 									</div>
 								</div>
 							</div>
+										<?php
+					}?>
+								<?php if (ceil($total_pages / $num_results_on_page) > 0): ?>
+							
+							<ul class="store-pagination">
+				<?php if ($page > 1): ?>
+				<li class="prev"><a href="index.php?page=<?php echo $page-1 ?>">Prev</a></li>
+				<?php endif; ?>
+
+				<?php if ($page > 3): ?>
+				<li class="start"><a href="index.php?page=1">1</a></li>
+				<li class="dots">...</li>
+				<?php endif; ?>
+
+				<?php if ($page-2 > 0): ?><li class="page"><a href="index.php?page=<?php echo $page-2 ?>"><?php echo $page-2 ?></a></li><?php endif; ?>
+				<?php if ($page-1 > 0): ?><li class="page"><a href="index.php?page=<?php echo $page-1 ?>"><?php echo $page-1 ?></a></li><?php endif; ?>
+
+				<li class="currentpage"><a href="index.php?page=<?php echo $page ?>"><?php echo $page ?></a></li>
+
+				<?php if ($page+1 < ceil($total_pages / $num_results_on_page)+1): ?><li class="page"><a href="index.php?page=<?php echo $page+1 ?>"><?php echo $page+1 ?></a></li><?php endif; ?>
+				<?php if ($page+2 < ceil($total_pages / $num_results_on_page)+1): ?><li class="page"><a href="index.php?page=<?php echo $page+2 ?>"><?php echo $page+2 ?></a></li><?php endif; ?>
+
+				<?php if ($page < ceil($total_pages / $num_results_on_page)-2): ?>
+				<li class="dots">...</li>
+				<li class="end"><a href="index.php?page=<?php echo ceil($total_pages / $num_results_on_page) ?>"><?php echo ceil($total_pages / $num_results_on_page) ?></a></li>
+				<?php endif; ?>
+
+				<?php if ($page < ceil($total_pages / $num_results_on_page)): ?>
+				<li class="next"><a href="index.php?page=<?php echo $page+1 ?>">Next</a></li>
+				<?php endif; ?>
+			</ul>
+						
+			
+		
+			<?php endif; ?>
+		
 							<div class="clearfix visible-sm visible-xs"></div>
 							<!-- /product -->
 
@@ -350,8 +433,7 @@
 							
 							<!-- /product -->
 						<!--</div>-->
-								<?php
-					}?>
+					
 						
 					</div>
 				</div>
