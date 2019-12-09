@@ -1,0 +1,63 @@
+body
+{
+    background: url(a.jpg);
+    background-size: cover;
+    font-family: sans-serif;
+}
+img 
+{
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    position: absolute;
+    top: 10px;
+    left: 630px;
+}
+table
+{
+    width: 100%;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+    color: white;
+    border-radius: 20px;
+
+}
+input[type=text]
+{
+    background: transparent;
+   outline: none;
+    height: 30px;
+    color: #fff;
+    font-size: 16px;
+    width: 100%;
+
+}
+input[type=submit]
+{
+   
+    outline:none;
+    border-color: brown;
+    height: 40px;
+    background: #fb2525;
+    color: #fff;
+    font-size: 18px;
+    border-radius: 10px;
+    width: 100%;
+}
+input[type=submit]:hover
+{
+    cursor: pointer;
+    background: #ffc107;
+    color: #000;
+}
+a
+{
+    text-decoration: none;
+    font-size: 12px;
+    color: darkgrey;
+}
+a:hover
+{
+    color: yellow;
+}
