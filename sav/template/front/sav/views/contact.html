@@ -234,7 +234,7 @@
 			
 			<div class="left-box">
 
-				<form method="POST" action="ajoutercontact.php">
+		<form method="POST" action="ajoutercontact.php">
 
 <table>
 
@@ -259,11 +259,16 @@
 </li>
 <li>
 	<ul>
-		<input type="text" name="sujet" required="" placeholder="sujet">				
-
+			<select id="sujet" name="sujet" required="" placeholder="sujet">
+				<option value="Reclamation">Reclamation</option>
+				<option value="Methodes de paiement"> Methodes de paiement </option>
+				<option value="Livraison">Livraison </option>
+				<option value="Autres">Autres </option>
 	</ul>
 </li>
+<br>
 <li>
+
 	<ul>
 		<textarea name="message" required="" placeholder="write your message here"></textarea>
 
@@ -275,6 +280,7 @@
 		<li>
 			</ul>
 		<input type="submit" name="submit" value="submit">
+		<input type="hidden" name="envoyer" value="1">
 </ul>
 </li>
 
@@ -282,6 +288,11 @@
 </table>
 
 </form>	
+
+
+
+
+
 				
 			</div>
 

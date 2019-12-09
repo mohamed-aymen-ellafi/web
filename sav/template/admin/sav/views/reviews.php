@@ -25,7 +25,7 @@ $listerevs=$revc1->afficherreview();
     <link rel="stylesheet" type="text/css" href="assets/vendor/datatables/css/buttons.bootstrap4.css">
     <link rel="stylesheet" type="text/css" href="assets/vendor/datatables/css/select.bootstrap4.css">
     <link rel="stylesheet" type="text/css" href="assets/vendor/datatables/css/fixedHeader.bootstrap4.css">
-
+ 
 </head>
 
 <body>
@@ -38,7 +38,7 @@ $listerevs=$revc1->afficherreview();
         <!-- ============================================================== -->
          <div class="dashboard-header">
             <nav class="navbar navbar-expand-lg bg-white fixed-top">
-                <a class="navbar-brand" href="../../index.html">Concept</a>
+                <a class="navbar-brand" href="../../index.php">Concept</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -570,11 +570,15 @@ John Abraham</h5>
                      </div>
 
                                </div>         
-                    <!-- ============================================================== -->
+                    <!-- 
+
+
+
+
+                        ============================================================== -->
                     <!-- end basic table  -->
                     <!-- ============================================================== -->
-              
-                  
+             
             <!-- ============================================================== -->
             <!-- footer -->
             <!-- ============================================================== -->
