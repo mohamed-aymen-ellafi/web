@@ -39,6 +39,20 @@ class categorieC
        echo "nomcategorie:".$categorie->getnomcategorie()."<br>";
        
 	}
+		function afficherproduitscategorie()
+	{
+		$sql="SELECT * FROM categorie,produit  where categorie.ref = produit.refcategorie";
+			$db = config::getConnexion();
+		try{
+		$liste=$db->query($sql);
+		return $liste;
+		}
+        catch (Exception $e)
+        {
+            die('Erreur: '.$e->getMessage());
+        }
+
+	}
 	function supprimercategorie($ref)
 	{
 		$db = config::getConnexion();

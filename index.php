@@ -1,14 +1,22 @@
-<?php
+
+<?php session_start();
+if(empty($_SESSION['id']))
+ {
+    echo "<script type='text/javascript'>";
+    echo "alert('Please Login first');
+    window.location.href='login.php';";
+    echo "</script>";
+ }
 include "../../core/produitC.php";
  $produitc=new produitC();
  $liste=$produitc->afficherproduits();
-
-
+ 
 ?>
 
 <html lang="en">
  
 <head>
+
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -42,9 +50,55 @@ include "../../core/produitC.php";
                 <div class="collapse navbar-collapse " id="navbarSupportedContent">
                     <ul class="navbar-nav ml-auto navbar-right-top">
                         <li class="nav-item">
-                            <div id="custom-search" class="top-search-bar">
-                                <input class="form-control" type="text" placeholder="Search..">
-                            </div>
+                        <?php
+
+
+try
+{
+ $bdd = new PDO("mysql:host=localhost;dbname=alibaba", "root", "");
+ $bdd ->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+}
+catch(Exception $e)
+{
+  die("Une érreur a été trouvé : " . $e->getMessage());
+}
+$bdd->query("SET NAMES UTF8");
+
+if (isset($_GET['s']) AND $_GET["s"] == "Search")
+{
+  
+ $_GET["terme"] = htmlspecialchars($_GET["terme"]); //pour sécuriser le formulaire contre les intrusions html
+ $terme = $_GET['terme'];
+ 
+
+ if (isset($terme))
+ {
+
+  $terme = strtolower($terme);
+  $select_terme = $bdd->prepare("SELECT urlimage,refproduit,nomproduit,marque,quantite,prixproduit,dateajout,refcategorie FROM produit WHERE nomproduit LIKE ? OR prixproduit LIKE ? or quantite LIKE ?");
+  $select_terme->execute(array("%".$terme."%", "%".$terme."%","%".$terme."%"));
+
+ }
+ else
+ {
+  $message = "Vous devez entrer votre requete dans la barre de recherche";
+ }
+}
+else
+{
+  $select_terme = $bdd->prepare("SELECT * FROM produit ");
+  $select_terme->execute(array("%","%","%","%","%","%","%"));
+ 
+}
+?>
+                                <form method="GET" action="search.php">
+                                <div id="custom-search" class="top-search-bar">
+                                <input type="search" class="form-control" placeholder="Search here..." name="terme">
+                                              <input type="hidden" name="s" value="Search">
+
+                                 </div>
+                             </form>
+                            
                         </li>
                         <li class="nav-item dropdown notification">
                             <a class="nav-link nav-icons" href="#" id="navbarDropdownMenuLink1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-fw fa-bell"></i> <span class="indicator"></span></a>
@@ -134,7 +188,7 @@ include "../../core/produitC.php";
                                 </div>
                                 <a class="dropdown-item" href="#"><i class="fas fa-user mr-2"></i>Account</a>
                                 <a class="dropdown-item" href="#"><i class="fas fa-cog mr-2"></i>Setting</a>
-                                <a class="dropdown-item" href="#"><i class="fas fa-power-off mr-2"></i>Logout</a>
+                                <a class="dropdown-item" href="../../core/logout.php"><i class="fas fa-power-off mr-2"></i>Logout</a>
                             </div>
                         </li>
                     </ul>
@@ -164,8 +218,7 @@ include "../../core/produitC.php";
                                 <div id="submenu-1" class="collapse submenu" style="">
                                     <ul class="nav flex-column">
                                         <li class="nav-item">
-                                            <a class="nav-link" href="#" data-toggle="collapse" aria-expanded="false" data-target="#submenu-1-2" aria-controls="submenu-1-2">Modifier Stock</a>
-                                            <div id="submenu-1-2" class="collapse submenu" style="">
+                                           
                                                 <ul class="nav flex-column">
                                                     <li class="nav-item">
                                                         <a class="nav-link" href="listeP.php">Afficher la liste des Produits</a>
@@ -179,14 +232,9 @@ include "../../core/produitC.php";
                                                     <li class="nav-item">
                                                         <a class="nav-link" href="supprimerP.php">Supprimer Produit</a>
                                                     </li>
-                                                    <li class="nav-item">
-                                                        <a class="nav-link" href="ecommerce-product-checkout.html">Reccupérer Produit</a>
-                                                    </li>
-                                                     <li class="nav-item">
-                                                        <a class="nav-link" href="ecommerce-product-checkout.html">Trier Produit</a>
-                                                    </li>
+                                                  
                                                 </ul>
-                                            </div>
+                                            
                                         </li>
                                         
                                         
@@ -203,6 +251,9 @@ include "../../core/produitC.php";
                                 <a class="nav-link active" href="#" data-toggle="collapse" aria-expanded="false" data-target="#submenu-6" aria-controls="submenu-6"><i class="fa fa-fw fa-user-circle"></i>Catégorie<span class="badge badge-success">6</span></a>
                                 <div id="submenu-6" class="collapse submenu" style="">
                                     <ul class="nav flex-column">
+                                         <li class="nav-item">
+                                            <a class="nav-link" href="afficherPr.php">Afficher la liste des catégories</a>
+                                        </li>
                                         <li class="nav-item">
                                             <a class="nav-link" href="ajoutC.php">Ajouter Catégorie</a>
                                         </li>
@@ -288,10 +339,11 @@ include "../../core/produitC.php";
                                                 </thead>
                                                 <tbody>
                                                     <?PHP
+
 foreach($liste as $row){
     ?>
     <tr>
-    <td><img src="./img/<?php echo $row['urlimage'];?>"></td>
+   <td><img src="<?php echo $row['urlimage']?>" width="100" height="100"></td>
     <td><?PHP echo $row['refproduit']; ?></td>
     <td><?PHP echo $row['nomproduit']; ?></td>
     <td><?PHP echo $row['marque']; ?></td>
@@ -299,11 +351,13 @@ foreach($liste as $row){
     <td><?PHP echo $row['prixproduit']; ?></td>
     <td><?PHP echo $row['dateajout']; ?></td>
     <td><?PHP echo $row['refcategorie']; ?></td>
+</tr>
     <?PHP
 }
 ?>
                                                 </tbody>
                                             </table>
+
                                         </div>
                                     </div>
                                 </div>

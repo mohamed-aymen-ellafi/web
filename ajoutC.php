@@ -6,6 +6,7 @@ include "../../entities/categorie.php";
 <html lang="en">
 <head>
     <!-- Required meta tags -->
+    <script type="text/javascript" src="test.js"></script>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <!-- Bootstrap CSS -->
@@ -33,9 +34,54 @@ include "../../entities/categorie.php";
                 <div class="collapse navbar-collapse " id="navbarSupportedContent">
                     <ul class="navbar-nav ml-auto navbar-right-top">
                         <li class="nav-item">
-                            <div id="custom-search" class="top-search-bar">
-                                <input class="form-control" type="text" placeholder="Search..">
-                            </div>
+                                                      <?php
+
+
+try
+{
+ $bdd = new PDO("mysql:host=localhost;dbname=alibaba", "root", "");
+ $bdd ->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+}
+catch(Exception $e)
+{
+  die("Une érreur a été trouvé : " . $e->getMessage());
+}
+$bdd->query("SET NAMES UTF8");
+
+if (isset($_GET['s']) AND $_GET["s"] == "Search")
+{
+  
+ $_GET["terme"] = htmlspecialchars($_GET["terme"]); //pour sécuriser le formulaire contre les intrusions html
+ $terme = $_GET['terme'];
+ 
+
+ if (isset($terme))
+ {
+
+  $terme = strtolower($terme);
+  $select_terme = $bdd->prepare("SELECT urlimage,refproduit,nomproduit,marque,quantite,prixproduit,dateajout,refcategorie FROM produit WHERE nomproduit LIKE ? OR prixproduit LIKE ? or quantite LIKE ?");
+  $select_terme->execute(array("%".$terme."%", "%".$terme."%","%".$terme."%"));
+
+ }
+ else
+ {
+  $message = "Vous devez entrer votre requete dans la barre de recherche";
+ }
+}
+else
+{
+  $select_terme = $bdd->prepare("SELECT * FROM produit ");
+  $select_terme->execute(array("%","%","%","%","%","%","%"));
+ 
+}
+?>
+                                <form method="GET" action="search.php">
+                                <div id="custom-search" class="top-search-bar">
+                                   <input type="search" class="form-control" placeholder="Search here..." name="terme">
+                                              <input type="hidden" name="s" value="Search">
+
+                                 </div>
+                             </form>
                         </li>
                         <li class="nav-item dropdown notification">
                             <a class="nav-link nav-icons" href="#" id="navbarDropdownMenuLink1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-fw fa-bell"></i> <span class="indicator"></span></a>
@@ -155,8 +201,8 @@ include "../../entities/categorie.php";
                                 <div id="submenu-1" class="collapse submenu" style="">
                                     <ul class="nav flex-column">
                                         <li class="nav-item">
-                                            <a class="nav-link" href="#" data-toggle="collapse" aria-expanded="false" data-target="#submenu-1-2" aria-controls="submenu-1-2">Modifier Stock</a>
-                                            <div id="submenu-1-2" class="collapse submenu" style="">
+                                            
+                                            
                                                 <ul class="nav flex-column">
                                                     <li class="nav-item">
                                                         <a class="nav-link" href="index.html"></a>
@@ -173,14 +219,9 @@ include "../../entities/categorie.php";
                                                     <li class="nav-item">
                                                         <a class="nav-link" href="afficherP.php">Supprimer Produit</a>
                                                     </li>
-                                                     <li class="nav-item">
-                                                        <a class="nav-link" href="ecommerce-product-checkout.html">Reccupérer Produit</a>
-                                                    </li>
-                                                     <li class="nav-item">
-                                                        <a class="nav-link" href="ecommerce-product-checkout.html">Trier Produit</a>
-                                                    </li>
+                                                    
                                                 </ul>
-                                            </div>
+                                           
                                         </li>
                                        
                                        
@@ -196,6 +237,9 @@ include "../../entities/categorie.php";
                                 <a class="nav-link active" href="#" data-toggle="collapse" aria-expanded="false" data-target="#submenu-6" aria-controls="submenu-6"><i class="fa fa-fw fa-user-circle"></i>Catégorie<span class="badge badge-success">6</span></a>
                                 <div id="submenu-6" class="collapse submenu" style="">
                                     <ul class="nav flex-column">
+                                         <li class="nav-item">
+                                            <a class="nav-link" href="afficherPr.php">Afficher la liste des catégories</a>
+                                        </li>
                                         <li class="nav-item">
                                             <a class="nav-link" href="ajoutC.php">Ajouter Catégorie</a>
                                         </li>
@@ -252,7 +296,7 @@ include "../../entities/categorie.php";
                     <!-- end pageheader  -->
                     <!-- ============================================================== -->
                     <div>
-                        <form method="POST" action="ajoutercategorie.php">
+                        <form method="POST" action="ajoutercategorie.php" name="f" onsubmit="return cat()">
     <table>
         <tr>
             <td>Référence</td>

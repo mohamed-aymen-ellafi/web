@@ -1,3 +1,17 @@
+<?php
+include "../../core/produitC.php";
+include "../../core/categorieC.php";
+$id="";
+if(!empty($_GET['refproduit']))
+{
+    $id=$_GET['refproduit'];
+}
+	$db=config::getConnexion();
+    $sql="SELECT urlimage,nomproduit,quantite,prixproduit,description FROM produit WHERE refproduit='$id' ";
+$statement = $db->prepare($sql);
+$statement->execute();
+$item = $statement->fetch();
+?>
 <!DOCTYPE html>
 <html lang="en">
 	<head>
@@ -27,12 +41,12 @@
  		<!-- Custom stlylesheet -->
  		<link type="text/css" rel="stylesheet" href="css/style.css"/>
 
- 		<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
- 		<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
- 		<!--[if lt IE 9]>
- 		  <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
- 		  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
- 		<![endif]-->
+		<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+		<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+		<!--[if lt IE 9]>
+		  <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+		  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+		<![endif]-->
 
     </head>
 	<body>
@@ -48,7 +62,7 @@
 					</ul>
 					<ul class="header-links pull-right">
 						<li><a href="#"><i class="fa fa-dollar"></i> USD</a></li>
-						<li><a href="#"><i class="fa fa-user-o"></i> My Account</a></li>
+						<li><a href="http://localhost/7amma/Nouveau%20dossier/login.php"><i class="fa fa-user-o"></i> My Account</a></li>
 					</ul>
 				</div>
 			</div>
@@ -69,18 +83,58 @@
 							</div>
 						</div>
 						<!-- /LOGO -->
+                          <?php
 
+
+try
+{
+ $bdd = new PDO("mysql:host=localhost;dbname=alibaba", "root", "");
+ $bdd ->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+}
+catch(Exception $e)
+{
+  die("Une érreur a été trouvé : " . $e->getMessage());
+}
+$bdd->query("SET NAMES UTF8");
+
+if (isset($_GET['s']) AND $_GET["s"] == "Search")
+{
+  
+ $_GET["terme"] = htmlspecialchars($_GET["terme"]); //pour sécuriser le formulaire contre les intrusions html
+ $terme = $_GET['terme'];
+ 
+
+ if (isset($terme))
+ {
+
+  $terme = strtolower($terme);
+  $select_terme = $bdd->prepare("SELECT urlimage,refproduit,nomproduit,marque,quantite,prixproduit,dateajout,refcategorie FROM produit WHERE nomproduit LIKE ? OR prixproduit LIKE ? or quantite LIKE ?");
+  $select_terme->execute(array("%".$terme."%", "%".$terme."%","%".$terme."%"));
+
+ }
+ else
+ {
+  $message = "Vous devez entrer votre requete dans la barre de recherche";
+ }
+}
+else
+{
+  $select_terme = $bdd->prepare("SELECT * FROM produit ");
+  $select_terme->execute(array("%","%","%","%","%","%","%"));
+ 
+}
+?>
 						<!-- SEARCH BAR -->
 						<div class="col-md-6">
 							<div class="header-search">
-								<form>
+								<form action="rechercherProduit.php" method="GET">
 									<select class="input-select">
 										<option value="0">All Categories</option>
 										<option value="1">Category 01</option>
 										<option value="1">Category 02</option>
 									</select>
-									<input class="input" placeholder="Search here">
-									<button class="search-btn">Search</button>
+									<input class="input" placeholder="Search here" name="terme">
+									<input type="submit" name="s" value="Search" class="search-btn">
 								</form>
 							</div>
 						</div>
@@ -99,47 +153,7 @@
 								</div>
 								<!-- /Wishlist -->
 
-								<!-- Cart -->
-								<div class="dropdown">
-									<a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
-										<i class="fa fa-shopping-cart"></i>
-										<span>Your Cart</span>
-										<div class="qty">3</div>
-									</a>
-									<div class="cart-dropdown">
-										<div class="cart-list">
-											<div class="product-widget">
-												<div class="product-img">
-													<img src="./img/product01.png" alt="">
-												</div>
-												<div class="product-body">
-													<h3 class="product-name"><a href="#">product name goes here</a></h3>
-													<h4 class="product-price"><span class="qty">1x</span>$980.00</h4>
-												</div>
-												<button class="delete"><i class="fa fa-close"></i></button>
-											</div>
-
-											<div class="product-widget">
-												<div class="product-img">
-													<img src="./img/product02.png" alt="">
-												</div>
-												<div class="product-body">
-													<h3 class="product-name"><a href="#">product name goes here</a></h3>
-													<h4 class="product-price"><span class="qty">3x</span>$980.00</h4>
-												</div>
-												<button class="delete"><i class="fa fa-close"></i></button>
-											</div>
-										</div>
-										<div class="cart-summary">
-											<small>3 Item(s) selected</small>
-											<h5>SUBTOTAL: $2940.00</h5>
-										</div>
-										<div class="cart-btns">
-											<a href="#">View Cart</a>
-											<a href="#">Checkout  <i class="fa fa-arrow-circle-right"></i></a>
-										</div>
-									</div>
-								</div>
+							
 								<!-- /Cart -->
 
 								<!-- Menu Toogle -->
@@ -170,13 +184,13 @@
 				<div id="responsive-nav">
 					<!-- NAV -->
 					<ul class="main-nav nav navbar-nav">
-						<li class="active"><a href="#">Home</a></li>
+						<li class="active"><a href="index.html">Home</a></li>
 						<li><a href="#">Hot Deals</a></li>
 						<li><a href="#">Categories</a></li>
-						<li><a href="#">Laptops</a></li>
-						<li><a href="#">Smartphones</a></li>
-						<li><a href="#">Cameras</a></li>
-						<li><a href="#">Accessories</a></li>
+						<li><a href="#">Categ1</a></li>
+						<li><a href="#">Categ2</a></li>
+						<li><a href="#">Categ3</a></li>
+						<li><a href="#">Categ4</a></li>
 					</ul>
 					<!-- /NAV -->
 				</div>
@@ -193,10 +207,12 @@
 				<!-- row -->
 				<div class="row">
 					<div class="col-md-12">
-						<h3 class="breadcrumb-header">Regular Page</h3>
 						<ul class="breadcrumb-tree">
-							<li><a href="#">Home</a></li>
-							<li class="active">Blank</li>
+							<li><a href="index.html">Home</a></li>
+							<li><a href="#">All Categories</a></li>
+							<li><a href="#">Categ1</a></li>
+							<li><a href="#">Categ2</a></li>
+							<li class="active">Product name goes here</li>
 						</ul>
 					</div>
 				</div>
@@ -211,56 +227,273 @@
 			<!-- container -->
 			<div class="container">
 				<!-- row -->
-													<?php
-include "../../core/produitC.php";
-include "../../core/categorieC.php";
-$produitc=new produitC();
-$liste=$produitc->afficherproduits();
-$categoriec=new categorieC();
-$listecat=$categoriec->affichercategories();
+								<!--<?php
+
+/*$produitc=new produitC();
+$liste=$produitc->afficherproduits();*/
+//$categoriec=new categorieC();
+//$listecat=$categoriec->affichercategories();
 
 									
-									foreach ($listecat as $row1) {
-
-										foreach ($liste as $row) {
+									
 											
 										
 									
-									?>
-								<div class="row">	
-                             	<div class="col-md-4 col-xs-6">
-								<div class="product">
-									<div class="product-img">
-										<img src="./img/<?php echo $row['urlimage'];?>"/>
-										<h2><?php echo $row['description']?></h2>
-									</div>
-									<div class="product-body">
-										<h3 class="product-name"> <?php echo $row['nomproduit'];?><a href="#"></a></h3>
-										<p class="product-category"> <?php echo $row1['nomcategorie'];?></p>
-										
-										<h4 class="product-price"> <?php echo $row['prixproduit'];?>DT</h4>
-										
-										<div class="product-btns">
-											<button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span class="tooltipp">Ajouter au favoris</span></button>
-											
-											<button class="quick-view"><i class="fa fa-eye"></i><span class="tooltipp">Details</span></button>
-										</div>
-									</div>
-									<div class="add-to-cart">
-										<button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i>Ajouter au panier</button>
+									?>-->
+				<div class="row">
+					<!-- Product main img -->
+					<div class="col-md-5 col-md-push-2">
+						<div id="product-main-img">
+							<div class="product-preview">
+								<img src="../back/<?php echo $item['urlimage'];?>">
+							</div>
+
+							
+						</div>
+					</div>
+					<!-- /Product main img -->
+
+					<!-- Product thumb imgs -->
+	
+					<div class="col-md-2  col-md-pull-5">
+						<div id="product-imgs">
+							<div class="product-preview">
+								<img src="../back/<?php echo $item['urlimage'];?>">
+							</div>
+
+							
+						</div>
+					</div>
+					<!-- /Product thumb imgs -->
+
+					<!-- Product details -->
+					<div class="col-md-5">
+						<div class="product-details">
+							<h2 class="product-name"> <?php echo $item['nomproduit'];?><a href="#"></a></h2>
+							<div>
+								<div class="product-rating">
+									<i class="fa fa-star"></i>
+									<i class="fa fa-star"></i>
+									<i class="fa fa-star"></i>
+									<i class="fa fa-star"></i>
+									<i class="fa fa-star-o"></i>
+								</div>
+								<a class="review-link" href="#">10 Review(s) | Add your review</a>
+							</div>
+							<div>
+								<h3 class="product-price"> <?php echo$item['prixproduit'];?>DT</h3>
+								<!--<span class="product-available">In Stock</span>-->
+							</div>
+							<p> <?php echo $item['description'];?></p>
+
+							<div class="product-options">
+								<label>
+									Size
+									<select class="input-select">
+										<option value="0">X</option>
+									</select>
+								</label>
+								<label>
+									Color
+									<select class="input-select">
+										<option value="0">Red</option>
+									</select>
+								</label>
+							</div>
+
+							<div class="add-to-cart">
+								<div class="qty-label">
+									Qty
+									<div class="input-number">
+										<input type="number">
+										<span class="qty-up">+</span>
+										<span class="qty-down">-</span>
 									</div>
 								</div>
+								<button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to cart</button>
 							</div>
-							<?php
-						}}?>
-						<div class="clearfix visible-sm visible-xs"></div>
+
+							<ul class="product-btns">
+								<li><a href="#"><i class="fa fa-heart-o"></i> add to wishlist</a></li>
+								<li><a href="#"><i class="fa fa-exchange"></i> add to compare</a></li>
+							</ul>
+
+							
+
+							<ul class="product-links">
+								<li>Share:</li>
+								<li><a href="#"><i class="fa fa-facebook"></i></a></li>
+								<li><a href="#"><i class="fa fa-twitter"></i></a></li>
+								<li><a href="#"><i class="fa fa-google-plus"></i></a></li>
+								<li><a href="#"><i class="fa fa-envelope"></i></a></li>
+							</ul>
+
 						</div>
+					
+					</div>
+					<!-- /Product details -->
+
+					<!-- Product tab -->
+					<div class="col-md-12">
+						<div id="product-tab">
+							<!-- product tab nav -->
+							<ul class="tab-nav">
+								<li class="active"><a data-toggle="tab" href="#tab1">Description</a></li>
+								<li><a data-toggle="tab" href="#tab2">Details</a></li>
+								<li><a data-toggle="tab" href="#tab3">Reviews (3)</a></li>
+							</ul>
+							<!-- /product tab nav -->
+
+							<!-- product tab content -->
+							
+							<!-- /product tab content  -->
+						</div>
+					</div>
+					<!-- /product tab -->
 				</div>
 				<!-- /row -->
 			</div>
 			<!-- /container -->
 		</div>
 		<!-- /SECTION -->
+
+		<!-- Section -->
+		<div class="section">
+			<!-- container -->
+			<div class="container">
+				<!-- row -->
+				<div class="row">
+
+					<div class="col-md-12">
+						<div class="section-title text-center">
+							<h3 class="title">Related Products</h3>
+						</div>
+					</div>
+
+					<!-- product -->
+					<div class="col-md-3 col-xs-6">
+						<div class="product">
+							<div class="product-img">
+								<img src="./img/product01.png" alt="">
+								<div class="product-label">
+									<span class="sale">-30%</span>
+								</div>
+							</div>
+							<div class="product-body">
+								<p class="product-category">Category</p>
+								<h3 class="product-name"><a href="#">product name goes here</a></h3>
+								<h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>
+								<div class="product-rating">
+								</div>
+								<div class="product-btns">
+									<button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span class="tooltipp">add to wishlist</span></button>
+									<button class="add-to-compare"><i class="fa fa-exchange"></i><span class="tooltipp">add to compare</span></button>
+									<button class="quick-view"><i class="fa fa-eye"></i><span class="tooltipp">quick view</span></button>
+								</div>
+							</div>
+							<div class="add-to-cart">
+								<button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to cart</button>
+							</div>
+						</div>
+					</div>
+					<!-- /product -->
+
+					<!-- product -->
+					<div class="col-md-3 col-xs-6">
+						<div class="product">
+							<div class="product-img">
+								<img src="./img/product02.png" alt="">
+								<div class="product-label">
+									<span class="new">NEW</span>
+								</div>
+							</div>
+							<div class="product-body">
+								<p class="product-category">Category</p>
+								<h3 class="product-name"><a href="#">product name goes here</a></h3>
+								<h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>
+								<div class="product-rating">
+									<i class="fa fa-star"></i>
+									<i class="fa fa-star"></i>
+									<i class="fa fa-star"></i>
+									<i class="fa fa-star"></i>
+									<i class="fa fa-star"></i>
+								</div>
+								<div class="product-btns">
+									<button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span class="tooltipp">add to wishlist</span></button>
+									<button class="add-to-compare"><i class="fa fa-exchange"></i><span class="tooltipp">add to compare</span></button>
+									<button class="quick-view"><i class="fa fa-eye"></i><span class="tooltipp">quick view</span></button>
+								</div>
+							</div>
+							<div class="add-to-cart">
+								<button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to cart</button>
+							</div>
+						</div>
+					</div>
+					<!-- /product -->
+
+					<div class="clearfix visible-sm visible-xs"></div>
+
+					<!-- product -->
+					<div class="col-md-3 col-xs-6">
+						<div class="product">
+							<div class="product-img">
+								<img src="./img/product03.png" alt="">
+							</div>
+							<div class="product-body">
+								<p class="product-category">Category</p>
+								<h3 class="product-name"><a href="#">product name goes here</a></h3>
+								<h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>
+								<div class="product-rating">
+									<i class="fa fa-star"></i>
+									<i class="fa fa-star"></i>
+									<i class="fa fa-star"></i>
+									<i class="fa fa-star"></i>
+									<i class="fa fa-star-o"></i>
+								</div>
+								<div class="product-btns">
+									<button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span class="tooltipp">add to wishlist</span></button>
+									<button class="add-to-compare"><i class="fa fa-exchange"></i><span class="tooltipp">add to compare</span></button>
+									<button class="quick-view"><i class="fa fa-eye"></i><span class="tooltipp">quick view</span></button>
+								</div>
+							</div>
+							<div class="add-to-cart">
+								<button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to cart</button>
+							</div>
+						</div>
+					</div>
+					<!-- /product -->
+
+					<!-- product -->
+					<div class="col-md-3 col-xs-6">
+						<div class="product">
+							<div class="product-img">
+								<img src="./img/product04.png" alt="">
+							</div>
+							<div class="product-body">
+								<p class="product-category">Category</p>
+								<h3 class="product-name"><a href="#">product name goes here</a></h3>
+								<h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>
+								<div class="product-rating">
+								</div>
+								<div class="product-btns">
+									<button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span class="tooltipp">add to wishlist</span></button>
+									<button class="add-to-compare"><i class="fa fa-exchange"></i><span class="tooltipp">add to compare</span></button>
+									<button class="quick-view"><i class="fa fa-eye"></i><span class="tooltipp">quick view</span></button>
+								</div>
+							</div>
+							<div class="add-to-cart">
+								<button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to cart</button>
+							</div>
+						</div>
+					</div>
+					<!-- /product -->
+
+				</div>
+				<!-- /row -->
+			</div>
+			<!-- /container -->
+		</div>
+		<!-- /Section -->
 
 		<!-- NEWSLETTER -->
 		<div id="newsletter" class="section">
@@ -323,10 +556,10 @@ $listecat=$categoriec->affichercategories();
 								<h3 class="footer-title">Categories</h3>
 								<ul class="footer-links">
 									<li><a href="#">Hot deals</a></li>
-									<li><a href="#">Laptops</a></li>
-									<li><a href="#">Smartphones</a></li>
-									<li><a href="#">Cameras</a></li>
-									<li><a href="#">Accessories</a></li>
+									<li><a href="#">Categ1</a></li>
+									<li><a href="#">Categ2</a></li>
+									<li><a href="#">Categ3</a></li>
+									<li><a href="#">Categ4</a></li>
 								</ul>
 							</div>
 						</div>
@@ -384,8 +617,6 @@ $listecat=$categoriec->affichercategories();
 								Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="fa fa-heart-o" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
 							<!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
 							</span>
-
-
 						</div>
 					</div>
 						<!-- /row -->
