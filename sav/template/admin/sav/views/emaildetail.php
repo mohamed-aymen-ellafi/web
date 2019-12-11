@@ -1,3 +1,15 @@
+<?php 
+session_start(); 
+
+if (isset($_SESSION['uname'])) {
+
+echo "<h1>Welcome". str_repeat('&nbsp;', 1).$_SESSION['uname']."</h1>" ;
+
+echo "<br> <a href='sav/views/logout.php'> <input type=button value=logout name=logout></a>";
+
+}
+
+?>
 <!doctype html>
 <html lang="en">
  
@@ -24,7 +36,7 @@
         <!-- ============================================================== -->
           <div class="dashboard-header">
             <nav class="navbar navbar-expand-lg bg-white fixed-top">
-                <a class="navbar-brand" href="../index.html">Concept</a>
+                <a class="navbar-brand" href="../../main.php">Concept</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -155,7 +167,7 @@ John Abraham</h5>
                                 <div id="submenu-1" class="collapse submenu" style="">
                                     <ul class="nav flex-column">
                                         <li class="nav-item">
-                                            <a class="nav-link" href="index.php" data-toggle="collapse" aria-expanded="false" data-target="#submenu-1-2" aria-controls="submenu-1-2">E-Commerce</a>
+                                            <a class="nav-link" href="../../main.php" data-toggle="collapse" aria-expanded="false" data-target="#submenu-1-2" aria-controls="submenu-1-2">E-Commerce</a>
                                             <div id="submenu-1-2" class="collapse submenu" style="">
                                                 <ul class="nav flex-column">
                                                     <li class="nav-item">

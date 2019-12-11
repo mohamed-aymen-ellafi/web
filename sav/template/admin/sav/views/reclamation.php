@@ -1,9 +1,41 @@
-<?php
+<?php 
+session_start(); 
+
+
 require "../controllers/reclamationc.php";
 $reclamationc1 = new reclamationc(); 
 $listereclamation=$reclamationc1->afficherreclamation();
 
 $lista=$reclamationc1->afficherreclamation();
+
+
+if (isset($_GET["sujet"]))
+ {
+
+
+
+    if ( $_GET["sujet"] == "Reclamation") {
+        $listereclamation = $reclamationc1->triparsujet("Reclamation");}
+
+     if ($_GET["sujet"] == "Livraison")
+     {
+        $listereclamation = $reclamationc1->triparsujet("Livraison"); }
+
+    if ($_GET["sujet"] == "Methodes de paiement")
+
+        { $listereclamation = $reclamationc1->triparsujet("Methodes de paiement");  }
+
+    else if ($_GET["sujet"] == "Autres")
+
+         { $listereclamation = $reclamationc1->triparsujet("Autres");}
+}            
+
+
+if (isset($_GET["email"])) {
+    $email = $_GET["email"];
+  
+    $listereclamation = $reclamationc1->searchbyemail($email);
+}
 
 
 ?>
@@ -31,6 +63,44 @@ $lista=$reclamationc1->afficherreclamation();
 
 </head>
 
+
+<style type="">
+
+
+
+
+/* Style the search box */
+.search input[type=text] , .filter select ,p   {
+  float: right;
+  padding: 6px;
+  border: none;
+  margin-top: 8px;
+  margin-right: 16px;
+  font-size: 17px;
+
+}
+.search button[type=submit], .filter  button[type=submit]{
+    float: right;
+    padding: 6px; 
+    border: none;
+    margin-top: 8px; 
+    margin-right: 16px; 
+}
+/* When the screen is less than 600px wide, stack the links and the search field vertically instead of horizontally */
+@media screen and (max-width: 600px) {
+ .search input[type=text] , .filter select{
+    float: none;
+    display: block;
+    text-align: left;
+    width: 100%;
+    margin: 0;
+    padding: 14px;
+  }
+  .search input[type=text] , .filter select {
+    border: 1px solid #ccc;
+  }
+}
+</style>
 <body>
     <!-- ============================================================== -->
     <!-- main wrapper -->
@@ -41,7 +111,7 @@ $lista=$reclamationc1->afficherreclamation();
         <!-- ============================================================== -->
          <div class="dashboard-header">
             <nav class="navbar navbar-expand-lg bg-white fixed-top">
-                <a class="navbar-brand" href="../../index.php">Concept</a>
+                <a class="navbar-brand" href="../../main.php">Concept</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -91,23 +161,28 @@ $lista=$reclamationc1->afficherreclamation();
                                 </li>
                             </ul>
                         </li>
+
+                      
                         <li class="nav-item dropdown nav-user">
                             <a class="nav-link nav-user-img" href="#" id="navbarDropdownMenuLink2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img src="assets/images/avatar-1.jpg" alt="" class="user-avatar-md rounded-circle"></a>
                             <div class="dropdown-menu dropdown-menu-right nav-user-dropdown" aria-labelledby="navbarDropdownMenuLink2">
                                 <div class="nav-user-info">
+                                      <?php if (isset($_SESSION['uname'])) { ?>
                                     <h5 class="mb-0 text-white nav-user-name">
-John Abraham</h5>
+<?php 
+                                    echo $_SESSION['uname'] ; ?></h5>
                                     <span class="status"></span><span class="ml-2">Available</span>
                                 </div>
                                 <a class="dropdown-item" href="#"><i class="fas fa-user mr-2"></i>Account</a>
                                 <a class="dropdown-item" href="#"><i class="fas fa-cog mr-2"></i>Setting</a>
-                                <a class="dropdown-item" href="#"><i class="fas fa-power-off mr-2"></i>Logout</a>
+                                <a class="dropdown-item" href="../../logout.php"><i class="fas fa-power-off mr-2"></i>Logout</a>
                             </div>
                         </li>
                     </ul>
                 </div>
             </nav>
         </div>
+    <?php }?>
         <!-- ============================================================== -->
         <!-- end navbar -->
         <!-- ============================================================== -->
@@ -131,11 +206,11 @@ John Abraham</h5>
                                 <div id="submenu-1" class="collapse submenu" style="">
                                     <ul class="nav flex-column">
                                         <li class="nav-item">
-                                            <a class="nav-link" href="index.php" data-toggle="collapse" aria-expanded="false" data-target="#submenu-1-2" aria-controls="submenu-1-2">E-Commerce</a>
+                                            <a class="nav-link" href="../../main.php" data-toggle="collapse" aria-expanded="false" data-target="#submenu-1-2" aria-controls="submenu-1-2">E-Commerce</a>
                                             <div id="submenu-1-2" class="collapse submenu" style="">
                                                 <ul class="nav flex-column">
                                                     <li class="nav-item">
-                                                        <a class="nav-link" href="../index.php">E Commerce Dashboard</a>
+                                                        <a class="nav-link" href="../main.php">E Commerce Dashboard</a>
                                                     </li>
                                                     <li class="nav-item">
                                                         <a class="nav-link" href="../ecommerce-product.html">Product List</a>
@@ -441,7 +516,7 @@ John Abraham</h5>
                         </div>
                     </div>
                 </div>
-                <!-- ============================================================== -->
+                <!-- =========Q===================================================== -->
                 <!-- end pageheader -->
                 <!-- ============================================================== -->
                 <div class="row">
@@ -451,6 +526,39 @@ John Abraham</h5>
                     <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
                         <div class="card">
                             <h5 class="card-header">Reclamations</h5>
+<form method="GET">
+
+<div class="search">
+      <button type="submit"> search </button>
+  <input type="text" placeholder="Search.." name="email">
+
+</div>
+
+</form>
+
+
+<form method="GET">
+        <div class="filter">
+
+
+     <button type="submit">filter</button>
+            <select id="sujet" name="sujet" required="" placeholder="sujet">
+
+                <option value="Reclamation">Reclamation</option>
+                <option value="Methodes de paiement"> Methodes de paiement </option>
+                <option value="Livraison">Livraison </option>
+                <option value="Autres">Autres </option>
+            </select>
+    <p> filter using  : </p>
+
+       
+
+        </div>
+    
+
+</form>
+
+
                             <div class="card-body">
                                 <div class="table-responsive">
                                     <table class="table table-striped table-bordered first">

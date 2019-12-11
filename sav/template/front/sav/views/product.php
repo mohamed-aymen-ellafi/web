@@ -1,4 +1,21 @@
+<?php 
+session_start(); 
+
+if (isset($_SESSION['uname'])) {
+
+echo "<h1>Welcome". str_repeat('&nbsp;', 1).$_SESSION['uname']."</h1>" ;
+
+echo "<br> <a href='../../logout.php'> <input type=button value=logout name=logout></a>";
+
+}
+
+?>
+
 <?php
+
+
+
+
 include "../controllers/reviewc.php";
 $revc1 = new reviewc(); 
 
@@ -8,6 +25,17 @@ $lista=$revc1->afficherreview();
 
 $r=0; 
 
+$e1=0; 
+$e2=0; 
+$e3=0; 
+$e4=0; 
+$e5=0; 
+
+
+$e=0;
+
+
+
 foreach ($lista as $k ) {
 
 	if  (($k['etat'])==1 )  
@@ -15,8 +43,30 @@ foreach ($lista as $k ) {
 
  	$r+=1;
 }
+	if ($k['rating']=='1') 
+	{
+		$e1+=1; 
+	}
+	if($k['rating']=='2')
+	{
+		$e2+=1; 
+	}
+	if($k['rating']=='3')
+	{
+		$e3+=1; 
+	}
+	if($k['rating']=='4')
+	{
+		$e4+=1; 
+	}
+	if($k['rating']=='5')
+	{
+		$e5+=1; 
+	}
 }
 
+$e=($e1+$e2+$e3+$e4+$e5); 
+$m=$e/5; 
 ?>
 
 
@@ -196,13 +246,13 @@ foreach ($lista as $k ) {
 				<div id="responsive-nav">
 					<!-- NAV -->
 					<ul class="main-nav nav navbar-nav">
-						<li class="active"><a href="../../index.html">home</a></li>
+						<li class="active"><a href="../../main.php">home</a></li>
 						<li><a href="#">Hot Deals</a></li>
 						<li><a href="#">Categories</a></li>
 						<li><a href="#">Categ1</a></li>
 						<li><a href="#">Categ2</a></li>
 						<li><a href="#">Categ3</a></li>
-						<li><a href="contact.html">contact</a></li>
+						<li><a href="contact.php">contact</a></li>
 					</ul>
 					<!-- /NAV -->
 				</div>
@@ -220,7 +270,7 @@ foreach ($lista as $k ) {
 				<div class="row">
 					<div class="col-md-12">
 						<ul class="breadcrumb-tree">
-							<li><a href="index.html">Home</a></li>
+							<li><a href="main.php">Home</a></li>
 							<li><a href="#">All Categories</a></li>
 							<li><a href="#">Categ1</a></li>
 							<li><a href="#">Categ2</a></li>
@@ -407,22 +457,57 @@ foreach ($lista as $k ) {
 
 								<!-- tab3  -->
 
+<?php
+echo $e1; 
+echo $e2;
+echo $e3; 
+echo $e4; 
+echo $e5;
 
-								<div id="tab3" class="tab-pane fade in">
-									<div class="row">
+echo $e;
+echo $m; 
+?>
+
+
+
+
+					<div id="tab3" class="tab-pane fade in">
+							<div class="row">
 										<!-- Rating -->
-										<div class="col-md-3">
-											<div id="rating">
-												<div class="rating-avg">
-													<span>4.5</span>
+									<div class="col-md-3">
+										<div id="rating">
+											<div class="rating-avg">
+													<span> <?php echo $m ?></span>
 													<div class="rating-stars">
-														<i class="fa fa-star"></i>
-														<i class="fa fa-star"></i>
-														<i class="fa fa-star"></i>
-														<i class="fa fa-star"></i>
-														<i class="fa fa-star-o"></i>
+
+														<?php for ($i=0;$i++,$i<= round($m);)
+         													
+         													{ 
+         													 ?>
+
+														
+
+																<i class="fa fa-star"></i>
+														
+
+																<?php } ?>
+
+																<?php for ($i=0;$i++,$i<= 5- round($m);)
+         													
+         													{  ?>
+
+														
+																<i class="fa fa-star-o empty"></i>
+
+														
+
+																<?php } ?>
+
+															
+														
 													</div>
 												</div>
+
 												<ul class="rating">
 													<li>
 														<div class="rating-stars">
@@ -432,10 +517,10 @@ foreach ($lista as $k ) {
 															<i class="fa fa-star"></i>
 															<i class="fa fa-star"></i>
 														</div>
-														<div class="rating-progress">
-															<div style="width: 80%;"></div>
+									<div class="rating-progress">
+											<div style="width: <?php echo (($e5*100)/$e)?>%;"></div>
 														</div>
-														<span class="sum"> 3 </span>
+														<span class="sum"> <?php echo $e5 ?> </span>
 													</li>
 													<li>
 														<div class="rating-stars">
@@ -446,9 +531,9 @@ foreach ($lista as $k ) {
 															<i class="fa fa-star-o"></i>
 														</div>
 														<div class="rating-progress">
-															<div style="width: 60%;"></div>
+															<div style="width: <?php echo (($e4*100)/$e)?>%;"></div>
 														</div>
-														<span class="sum">2</span>
+														<span class="sum"><?php echo $e4 ?></span>
 													</li>
 													<li>
 														<div class="rating-stars">
@@ -459,9 +544,9 @@ foreach ($lista as $k ) {
 															<i class="fa fa-star-o"></i>
 														</div>
 														<div class="rating-progress">
-															<div></div>
+															<div style="width: <?php echo (($e3*100)/$e)?>%;"></div>
 														</div>
-														<span class="sum">0</span>
+														<span class="sum"> <?php echo $e3 ?></span>
 													</li>
 													<li>
 														<div class="rating-stars">
@@ -472,9 +557,9 @@ foreach ($lista as $k ) {
 															<i class="fa fa-star-o"></i>
 														</div>
 														<div class="rating-progress">
-															<div></div>
+														<div style="width: <?php echo (($e2*100)/$e)?>%;"></div>
 														</div>
-														<span class="sum">0</span>
+														<span class="sum"> <?php echo $e2 ?> </span>
 													</li>
 													<li>
 														<div class="rating-stars">
@@ -485,9 +570,9 @@ foreach ($lista as $k ) {
 															<i class="fa fa-star-o"></i>
 														</div>
 														<div class="rating-progress">
-															<div></div>
+															<div style="width: <?php echo (($e1*100)/$e)?>%;"></div>
 														</div>
-														<span class="sum">0</span>
+														<span class="sum"> <?php echo $e1 ?> </span>
 													</li>
 												</ul>
 											</div>
@@ -509,15 +594,22 @@ foreach ($lista as $k ) {
 									
 
 			<?PHP 
-  
-			foreach($listerevs as $row)
-		{ 
+  $occ=0; 
+		foreach($listerevs as $row) {
+		
+			$occ++; 
 
     ?>  
     <?php  if (($row['etat'])==1 )  
    
 
     { 
+    	if ($occ<=3)
+    	{
+
+
+
+
     	?>
     	
     	
@@ -545,7 +637,6 @@ foreach ($lista as $k ) {
 
 															<div class="review-rating">
 
-
 														<?php for ($i=0;$i++,$i<= ($row['rating']);)
          													
          													{  ?>
@@ -572,20 +663,13 @@ foreach ($lista as $k ) {
 </div>
 
 															<div class="review-body">
-															<p><?PHP echo $row['review']; ?></p>
+
+															<p><?PHP echo $row['review']; ?>
+																
+															</p>
 														    </div>
 
 														
-												
-
-														
-												
-													
-
-
-
-												
-
 
 </li>
   
@@ -595,16 +679,23 @@ foreach ($lista as $k ) {
     </table>
 
 
-     <?php } ?>
+     <?php }
 
 
-<?PHP }
+
+
+}}
 ?>
 
+<?php echo $occ; 
+?>
 	</div>
 
 
+
 				
+
+
 									<!-- /Reviews -->
 
 

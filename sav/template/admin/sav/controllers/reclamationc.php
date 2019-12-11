@@ -20,6 +20,33 @@ class reclamationc {
         }
     }
 
+   
+
+      function searchbyemail($email)
+    {
+        $sql = "SELECT * From savcontact WHERE (email LIKE '%" . $email . "%') ";
+        $db  = Config::getConnexion();
+        try {
+            $list = $db->query($sql);
+            return $list;
+        } catch (Exception $e) {
+            die('Error: ' . $e->getMessage());
+        }
+    }
+
+function triparsujet($sujet)
+    {
+        $sql = "SElECT * From savcontact where sujet = '" . $sujet . "'";
+        $db  = Config::getConnexion();
+        try {
+            $list = $db->query($sql);
+            return $list;
+        } catch (Exception $e) {
+            die('Error: ' . $e->getMessage());
+        }
+    }
+
+
 
     function supprimerreclamation($reclamation)
     {

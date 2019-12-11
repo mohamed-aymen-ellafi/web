@@ -1,4 +1,7 @@
-<?php
+<?php 
+session_start(); 
+
+
 include "../controllers/reviewc.php";
 $revc1 = new reviewc(); 
 $listerevs=$revc1->afficherreview();
@@ -28,6 +31,8 @@ $listerevs=$revc1->afficherreview();
  
 </head>
 
+
+
 <body>
     <!-- ============================================================== -->
     <!-- main wrapper -->
@@ -38,7 +43,7 @@ $listerevs=$revc1->afficherreview();
         <!-- ============================================================== -->
          <div class="dashboard-header">
             <nav class="navbar navbar-expand-lg bg-white fixed-top">
-                <a class="navbar-brand" href="../../index.php">Concept</a>
+                <a class="navbar-brand" href="../../main.php">Concept</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -130,22 +135,24 @@ John Abraham</span>is now following you
                             </ul>
                         </li>
                         <li class="nav-item dropdown nav-user">
-                            <a class="nav-link nav-user-img" href="#" id="navbarDropdownMenuLink2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img src="../assets/images/avatar-1.jpg" alt="" class="user-avatar-md rounded-circle"></a>
+                            <a class="nav-link nav-user-img" href="#" id="navbarDropdownMenuLink2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img src="assets/images/avatar-1.jpg" alt="" class="user-avatar-md rounded-circle"></a>
                             <div class="dropdown-menu dropdown-menu-right nav-user-dropdown" aria-labelledby="navbarDropdownMenuLink2">
-                                <div class="nav-user-info">
+                               <div class="nav-user-info">
+                                    <?php if (isset($_SESSION['uname'])) { ?>
                                     <h5 class="mb-0 text-white nav-user-name">
-John Abraham</h5>
+<?php 
+                                    echo $_SESSION['uname'] ; ?></h5>
                                     <span class="status"></span><span class="ml-2">Available</span>
                                 </div>
                                 <a class="dropdown-item" href="#"><i class="fas fa-user mr-2"></i>Account</a>
                                 <a class="dropdown-item" href="#"><i class="fas fa-cog mr-2"></i>Setting</a>
-                                <a class="dropdown-item" href="#"><i class="fas fa-power-off mr-2"></i>Logout</a>
+                                <a class="dropdown-item" href="../../logout.php"><i class="fas fa-power-off mr-2"></i>Logout</a>
                             </div>
                         </li>
                     </ul>
                 </div>
             </nav>
-        </div>
+        <?php } ?>
         <!-- ============================================================== -->
         <!-- end navbar -->
         <!-- ============================================================== -->
@@ -169,11 +176,11 @@ John Abraham</h5>
                                 <div id="submenu-1" class="collapse submenu" style="">
                                     <ul class="nav flex-column">
                                         <li class="nav-item">
-                                            <a class="nav-link" href="index.html" data-toggle="collapse" aria-expanded="false" data-target="#submenu-1-2" aria-controls="submenu-1-2">E-Commerce</a>
+                                            <a class="nav-link" href="../../main.php" data-toggle="collapse" aria-expanded="false" data-target="#submenu-1-2" aria-controls="submenu-1-2">E-Commerce</a>
                                             <div id="submenu-1-2" class="collapse submenu" style="">
                                                 <ul class="nav flex-column">
                                                     <li class="nav-item">
-                                                        <a class="nav-link" href="../index.html">E Commerce Dashboard</a>
+                                                        <a class="nav-link" href="../main.php">E Commerce Dashboard</a>
                                                     </li>
                                                     <li class="nav-item">
                                                         <a class="nav-link" href="../ecommerce-product.html">Product List</a>
@@ -300,7 +307,7 @@ John Abraham</h5>
                                 <div id="submenu-6" class="collapse submenu" style="">
                                     <ul class="nav flex-column">
                                         <li class="nav-item">
-                                            <a class="nav-link" href="reclamation.php">reclamation</a>
+                                            <a class="nav-link" href="reclamation.php">reclamationss</a>
                                         </li>
                                         <li class="nav-item">
                                             <a class="nav-link" href="#">review</a>
@@ -465,14 +472,14 @@ John Abraham</h5>
                 <div class="row">
                     <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
                         <div class="page-header">
-                            <h2 class="pageheader-title">Reclamations</h2>
+                            <h2 class="pageheader-title">Review</h2>
                             <p class="pageheader-text">Proin placerat ante duiullam scelerisque a velit ac porta, fusce sit amet vestibulum mi. Morbi lobortis pulvinar quam.</p>
                             <div class="page-breadcrumb">
                                 <nav aria-label="breadcrumb">
                                     <ol class="breadcrumb">
                                         <li class="breadcrumb-item"><a href="#" class="breadcrumb-link">Dashboard</a></li>
                                         <li class="breadcrumb-item"><a href="#" class="breadcrumb-link">Tables</a></li>
-                                        <li class="breadcrumb-item active" aria-current="page">Reclamations</li>
+                                        <li class="breadcrumb-item active" aria-current="page">Review</li>
                                     </ol>
                                 </nav>
                             </div>
@@ -489,6 +496,10 @@ John Abraham</h5>
                     <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
                         <div class="card">
                             <h5 class="card-header">reviews</h5>
+                            
+
+
+
                             <div class="card-body">
                                 <div class="table-responsive">
                                     <table class="table table-striped table-bordered first">
@@ -520,6 +531,7 @@ John Abraham</h5>
 
 
     <td><?PHP echo $row['date']; ?></td>
+
 
     <td name="etat" value="<?PHP echo $row['etat'] ;?> ">  
 
@@ -553,13 +565,9 @@ John Abraham</h5>
         </form>
     </td>
 
-
-<!--
-    <td>
-        <button><a href="mailing.html">Repondre</button>
-    </td>.  -->
    
     </tr>
+    
     <?PHP }
 ?>
                 

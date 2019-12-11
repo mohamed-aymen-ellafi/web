@@ -10,7 +10,7 @@ $contact1=new contact($_POST['nom'],$_POST['prenom'],$_POST['email'],$_POST['suj
 $contact1c=new contactc();
 $contact1c->ajoutercontact($contact1);
 
-header('Location: contact.html');
+header('Location: contact.php');
 	
 
 
