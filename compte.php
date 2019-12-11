@@ -16,48 +16,66 @@ session_start();
 <body>
  <?PHP
      include "../core/core.php";
+     $er=0;
+     $ar=0;
+
 
             $a = new PDO("mysql:host=127.0.0.1;dbname=em","root","");
     if (isset($_GET['id']))
     { 
         if (isset($_GET['username']))
-        {
-        $r = $a->prepare("SELECT * FROM me WHERE username = ? ");
-        $r->execute(array($_GET['username']));
-        while( $rs = $r->fetch())
-        {
-           
-        if(!empty($_GET['username']) AND $rs['username']==$_GET['username'])
-        {
-          
-        echo "<script type='text/javascript'>alert('this username already existes please change');</script>";
-        }
-        else
-        {     modifierusername();
+ {
+   $r=recherche_username();
+   
+    while( $rs = $r->fetch())
+ {
+    
+ if(!empty($_GET['username']) AND $rs['username']==$_GET['username'])
+ {
+     $er=1;
+ echo "<script type='text/javascript'>alert('this username already existes please change');</script>";
+ }
+ else
+ {
+     $er=0;
 
-        }
+ }
+ }
+ if (!empty($_GET['username']) AND $er==0)
+ {
+    modifierusername();
+	
+ }
 
-        }
-        }
-        
+ }
+         
         if (isset($_GET['mail']))
         {
-        $r = $a->prepare("SELECT * FROM me WHERE mail = ? ");
-        $r->execute(array($_GET['mail']));
-        while( $rs = $r->fetch())
+            $f=recherche_mail();
+
+        while( $fs = $f->fetch())
         {
            
-        if(!empty($_GET['mail']) AND $rs['mail']==$_GET['mail'])
+        if(!empty($_GET['mail']) AND $fs['mail']==$_GET['mail'])
         {
+            $ar=1;
         echo "<script type='text/javascript'>alert('this mail already existes please change');</script>";
         }
         else
         {
-            modifiermail();
+           $ar=0;
 
         }
         }
+        if (!empty($_GET['mail']) AND $ar==0)
+{
+    
+    modifiermail();
+
+}
         }  
+
+
         if (isset($_GET['mdp'],$_GET['mdp2']) AND !empty($_GET['mdp']) AND !empty($_GET['mdp2']))
         {
             $pass=$_GET['mdp'];
@@ -76,13 +94,8 @@ session_start();
 
          if (isset($_GET['adresse']) AND !empty($_GET['adresse']))
          {
-             $r=$a->prepare("UPDATE `admin` SET 
-         `adresse`=:adresse
-         WHERE id=:id");
-         $r->execute(array(
-             'adresse' => $_GET['adresse'],
-             'id' => $_GET['id']
-         ));
+            modifieradresse();
+        
          }
          if (isset($_GET['num']) AND !empty($_GET['num']))
 {
@@ -92,13 +105,7 @@ if(strlen($num)==8)
 {
          if (isset($_GET['num']) AND !empty($_GET['num']))
          {
-             $r=$a->prepare("UPDATE `admin` SET 
-         `num`=:num
-         WHERE id=:id");
-         $r->execute(array(
-             'num' => $_GET['num'],
-             'id' => $_GET['id']
-         ));
+            modifiernum();
          }
         }
         else
@@ -117,13 +124,7 @@ if(strlen($num)==8)
     
          if (isset($_GET['cp']) AND !empty($_GET['cp']))
          {
-             $r=$a->prepare("UPDATE `admin` SET 
-         `cp`=:cp
-         WHERE id=:id");
-         $r->execute(array(
-             'cp' => $_GET['cp'],
-             'id' => $_GET['id']
-         ));
+            modifiercp();
          }
         }
         else
@@ -135,18 +136,18 @@ if(strlen($num)==8)
 
          if (isset($_GET['city']) AND !empty($_GET['city']))
          {
-             $r=$a->prepare("UPDATE `admin` SET 
-         `city`=:city
-         WHERE id=:id");
-         $r->execute(array(
-             'city' => $_GET['city'],
-             'id' => $_GET['id']
-         ));
+            modifiercity();
+
          }
 
         }
-         $r = $a->query("SELECT * FROM me");
-         $rs = $r->fetch()
+        if (isset($_GET['sub']))
+        {
+
+           header('Location: connexion.php');
+
+        }
+    
        
      
 ?>
@@ -156,41 +157,47 @@ if(strlen($num)==8)
     
      <tr>
          <td>username</td>
-         <td><input type="text" name="username"></td>
+         <td><input type="text" name="username" placeholder="<?PHP echo $_SESSION['username'] ;?>"></td>
      </tr>
      <tr>
          <td>adress</td>
-         <td><input type="text" name="adresse" ></td>
+         <td><input type="text" name="adresse" placeholder="<?PHP echo $_SESSION['adresse'] ;?>"></td>
      </tr>
      <tr>
+         <td>mail</td>
+         <td><input type="email" name="mail" placeholder="<?PHP echo $_SESSION['mail'] ;?>" ></td>
+     </tr>
+  
+     <tr>
          <td>number</td>
-         <td><input type="text" name="num" ></td>
+         <td><input type="text" name="num" placeholder="<?PHP echo $_SESSION['num'] ;?>"></td>
      </tr>
      <tr>
          <td>postal code</td>
-         <td><input type="text" name="cp" ></td>
+         <td><input type="text" name="cp" placeholder="<?PHP echo $_SESSION['cp'] ;?>" ></td>
      </tr>
      <tr>
          <td>city</td>
-         <td><input type="text" name="city" ></td>
+         <td><input type="text" name="city" placeholder="<?PHP echo $_SESSION['city'] ;?>"></td>
      </tr>
      
      <tr>
          <td>password</td>
-         <td><input type="text" name="mdp" ></td>
+         <td><input type="text" name="mdp" placeholder="<?PHP echo $_SESSION['mdp'] ;?>" ></td>
      </tr>
      <tr>
          <td>password verification</td>
-         <td><input type="text" name="mdp2" ></td>
+         <td><input type="text" name="mdp2" placeholder="<?PHP echo $_SESSION['mdp'] ;?>" ></td>
      </tr>
      <tr>
          <td></td>
-         <td><input type="submit" value="confirmer la modifier"></td>
+         <td><input type="submit" value="confirmer la modifier" name="sub"></td>
      </tr>
      </table>
-     <a href="connexion.php">connexion</a>
 
 
 </form> <br>
+<a href="store.php">back to the store</a>
+
 </body>
 </html>

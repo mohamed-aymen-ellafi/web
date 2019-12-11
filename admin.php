@@ -1,3 +1,7 @@
+<?php
+session_start();
+
+?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -12,52 +16,110 @@
 
 </head>
 <body>
-<?PHP
-     include "../core/core.php";
- $admin1C=new adminC();
-$listeadmin=$admin1C->afficheradmins();
-
-     
-     ?>
-<table border="1" >
-<tr>
-<td>id</td>
-<td>nom</td>
-<td>prenom</td>
-<td>adresse</td>
-<td>mail</td>
-<td>number</td>
-<td>postal code</td>
-<td>city</td>
+<form method="GET" action="">
+ <select name="tri" >
+<option>id</option>
+<option>nom</option>
+<option>city</option>
+</select>
+<select name="tri2" >
+<option>croissant</option>
+<option>decroissant</option>
+</select>
 
 
-</tr>
+<input type="submit" value=ok>
 
+ </form>
+
+ <form action="" method="GET">
+<input type="number" name="page" placeholder="page">
+<input type="submit">
+</form> 
+<form action="" method="GET">
+    <input type="text" name="id" placeholder="pdf...">
+    <input type="submit" name="sub" value="download pdf">
+     </form>
 <?php
-foreach($listeadmin as $rs)
-     {
+     include "../core/core.php";
 
-?>
+require_once __DIR__ . '/vendor/autoload.php';
 
-<tr>
-<td><?PHP echo $rs['id'];?></td>
-<td><?PHP echo $rs['nom'];?></td>
-<td><?PHP echo $rs['prenom'];?></td>
-<td><?PHP echo $rs['adresse'];?></td>
-<td><?PHP echo $rs['mail'];?></td>
-<td><?PHP echo $rs['num'];?></td>
-<td><?PHP echo $rs['cp'];?></td>
-<td><?PHP echo $rs['city'];?></td>
+if (isset($_GET['id']))
+    {
+     $r=recherche_id();      
+
+while( $rs = $r->fetch())
+{
+ 
 
 
-</tr>
+$id = $rs['id'];
+$nom = $rs['nom'];
+$prenom = $rs['prenom'];
+$adresse = $rs['adresse'];
+$mail = $rs['mail'];
+$num = $rs['num'];
+$cp = $rs['cp'];
+$city = $rs['city'];
 
-<?PHP
+
+$mpdf = new \Mpdf\Mpdf();
+$data='';
+$data .= '<strong>id :</strong>' .$id. '<br>';
+$data .= '<strong>first name :</strong>' .$nom. '<br>';
+$data .= '<strong>last name :</strong>' .$prenom. '<br>';
+$data .= '<strong>adress :</strong>' .$adresse. '<br>';
+$data .= '<strong>email :</strong>' .$mail. '<br>';
+$data .= '<strong>number :</strong>' .$num. '<br>';
+$data .= '<strong>postal code :</strong>' .$cp. '<br>';
+$data .= '<strong>city :</strong>' .$city. '<br>';
+
+$mpdf->WriteHTML($data);
+$mpdf->Output('my pdf.pdf','D');
 }
 
-?>
+    }
+ if (isset($_GET['tri']) AND $_GET['tri']=="id" AND isset($_GET['tri2']) AND $_GET['tri2']=="decroissant")
 
-</table>
+{
+     $admin1C=new adminC();
+     $listeadmin=$admin1C->afficheradminsiddec();
+}
+else if (isset($_GET['tri']) AND $_GET['tri']=="nom" AND isset($_GET['tri2']) AND $_GET['tri2']=="croissant")
+{
+     $admin1C=new adminC();
+     $listeadmin=$admin1C->afficheradminsnomcr();
+     
+}
+else  if (isset($_GET['tri']) AND $_GET['tri']=="nom" AND isset($_GET['tri2']) AND $_GET['tri2']=="decroissant")
+
+{
+     $admin1C=new adminC();
+     $listeadmin=$admin1C->afficheradminsnomdec();
+}
+else if (isset($_GET['tri']) AND $_GET['tri']=="city" AND isset($_GET['tri2']) AND $_GET['tri2']=="croissant")
+{
+     $admin1C=new adminC();
+     $listeadmin=$admin1C->afficheradminscitycr();
+     
+}
+else  if (isset($_GET['tri']) AND $_GET['tri']=="city" AND isset($_GET['tri2']) AND $_GET['tri2']=="decroissant")
+
+{
+     $admin1C=new adminC();
+     $listeadmin=$admin1C->afficheradminscitydec();
+}     
+else
+{
+     $admin1C=new adminC();
+     $listeadmin=$admin1C->afficheradminsidcr();
+     
+}
+
+
+     ?>
+
 <?php
 
 
@@ -66,7 +128,7 @@ foreach($listeadmin as $rs)
 <br>
 
 <form method="GET" action="">
-<input type="text" name="id" placeholder="taper l'id">
+<input type="text" name="nom" id="myInput" onkeyup="myFunction()" placeholder="Search for names.." >
 <input type="submit" name="aff" value=afficher>
 
 
@@ -74,14 +136,15 @@ foreach($listeadmin as $rs)
 </form>
      <?PHP
     
-          if (isset($_GET['aff']))
+         if (isset($_GET['aff']))
 {
-     if (isset($_GET['id']))
+ if (isset($_GET['nom']))
      {
       $r=recherche();      
      ?>
      <br>
-     <table border="1">
+     <table border="1" id="myTable">
+  <tr class="header">
      <tr>
 <td>id</td>
 <td>nom</td>
@@ -131,16 +194,83 @@ foreach($listeadmin as $rs)
      <?PHP
      if (isset($_GET['supp']))
      {
-     if (isset($_GET['id']))
-     {
-          supprimer();
+          $meC=new meC();
+          $adminC=new adminC();
+
+if (isset($_GET["id"]))
+{
+     $meC->supprimerme($_GET["id"]);
+     $adminC->supprimermead($_GET["id"]);
+     
+
      header('Location: admin.php');
 
+}
 
-     }
+
+
+     
     }
      ?>
-    <a href="aj.php">a</a>
+<table border="1" >
+<tr>
+<td>id</td>
+<td>nom</td>
+<td>prenom</td>
+<td>adresse</td>
+<td>mail</td>
+<td>number</td>
+<td>postal code</td>
+<td>city</td>
+
+
+</tr>
+
+<?php
+foreach($listeadmin as $rs)
+     {
+
+?>
+
+<tr>
+<td><?PHP echo $rs['id'];?></td>
+<td><?PHP echo $rs['nom'];?></td>
+<td><?PHP echo $rs['prenom'];?></td>
+<td><?PHP echo $rs['adresse'];?></td>
+<td><?PHP echo $rs['mail'];?></td>
+<td><?PHP echo $rs['num'];?></td>
+<td><?PHP echo $rs['cp'];?></td>
+<td><?PHP echo $rs['city'];?></td>
+
+
+</tr>
+
+<?PHP
+}
+?>
+
+</table>
+
+<script>
+function myFunction() {
+  var input, filter, table, tr, td, i, txtValue;
+  input = document.getElementById("myInput");
+ filter = input.value.toUpperCase();
+  table = document.getElementById("myTable");
+  tr = table.getElementsByTagName("tr");
+  for (i = 0; i < tr.length; i++) {
+    td = tr[i].getElementsByTagName("td")[1];
+    if (td) {
+      txtValue = td.textContent || td.innerText;
+      if (txtValue.toUpperCase().indexOf(filter) > -1) {
+        tr[i].style.display = "";
+      } else {
+        tr[i].style.display = "none";
+      }
+    }       
+  }
+}
+</script>
 
 </body>
 </html>

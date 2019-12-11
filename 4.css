@@ -2,27 +2,7 @@ body
 {
     background: url(a.jpg);
     background-size: cover;
-    background-position: center;
     font-family: sans-serif;
-}
-h1
-{
-    margin: 0;
-    padding: 0;
-    font-weight: bold;
-    text-align: center;
-
-}
-div
-{
-    box-sizing: border-box;
-    padding: 70px 30px;
-    background: black;
-    color: white;
-    width: 320px;
-    box-sizing: border-box;
-    margin: auto;
-    margin-top: 50px;
 }
 img 
 {
@@ -30,18 +10,11 @@ img
     height: 100px;
     border-radius: 50%;
     position: absolute;
-    top: 10px;
+    top: 100px;
     left: 630px;
 }
-input
+input[type=text]
 {
-    width: 100%;
-    margin-bottom: 20px;
-}
-input[type=text],[type=password],[type=email]
-{
-    border: none;
-    border-bottom: 1px solid #fff;
     background: transparent;
    outline: none;
     height: 30px;
@@ -57,7 +30,7 @@ input[type=submit]
     background: #fb2525;
     color: #fff;
     font-size: 18px;
-    border-radius: 20px;
+    border-radius: 10px;
 }
 input[type=submit]:hover
 {
@@ -75,7 +48,7 @@ a:hover
 {
     color: yellow;
 }
-table
+h1
 {
-    color: crimson;
+    color :white;
 }

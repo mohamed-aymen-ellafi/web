@@ -11,7 +11,7 @@
 <body>
 <div>
     <img src="avatar.png" >
-        <h3>create an account</h3>
+        <h3>create an account</h3>    
 <form action="" method="GET">
 <p>first name</p>
 <input type="text" name="nom" placeholder="Enter first name" required>
@@ -29,6 +29,8 @@
 <input type="text" name="username" placeholder="Enter Username" required>
 <p>Mail</p>
 <input type="email" name="mail"  placeholder="Enter Email" required>
+<p>ind</p>
+<input type="text" name="ind"  placeholder="Enter ind" required>
 <p>Password</p>
 <input type="password" name="mdp" placeholder="Enter password" required>
 <p>Password verification</p>
@@ -97,11 +99,13 @@ if(strlen($cp)==4)
 
  if($passCNF==$pass)
  {   
-    if ($er==0 AND isset($_GET['username']) AND isset($_GET['mail'])AND isset($_GET['mdp']) AND !empty($_GET['username']) AND !empty($_GET['mail'])AND !empty($_GET['mdp'])AND !empty($_GET['mdp2'])) 
+    if ($er==0 AND isset($_GET['ind']) AND isset($_GET['username']) AND isset($_GET['mail'])AND isset($_GET['mdp']) AND !empty($_GET['username']) AND !empty($_GET['mail']) AND !empty($_GET['ind']) AND !empty($_GET['mdp'])AND !empty($_GET['mdp2'])) 
     {
-        $me1=new me($_GET['username'],$_GET['mail'],$_GET['mdp']);
+        $me1=new me($_GET['username'],$_GET['mail'],$_GET['ind'],$_GET['mdp']);
         $me1C=new meC();
         $me1C->ajouterme($me1);
+       header('Location: connexion.php');
+
 	
 
     }
@@ -112,6 +116,7 @@ if(strlen($cp)==4)
         $admin1C->ajouteradmin($admin1);
 	    }
 
+      header('Location: connexion.php');
 
 
  }

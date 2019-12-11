@@ -4,7 +4,7 @@ include "../config.php";
 
 class meC {
     function ajouterme($me){
-		$sql="insert into me (username,mail,mdp) values (:username, :maiil,:mdp )";
+		$sql="insert into me (username,mail,ind,mdp) values (:username, :maiil,:ind,:mdp )";
         $db = config::getConnexion();
 
         try{
@@ -12,9 +12,13 @@ class meC {
 		
         $username=$me->getusername();
         $mail=$me->getmail();
+        $ind=$me->getind();
+
         $mdp=$me->getmdp();
 		$req->bindValue(':username',$username);
-		$req->bindValue(':maiil',$mail);
+        $req->bindValue(':maiil',$mail);
+        $req->bindValue(':ind',$ind);
+
 		$req->bindValue(':mdp',$mdp);
 		
             $req->execute();
@@ -25,28 +29,10 @@ class meC {
         }
 		
 	}
-        function ajoutermee($me,$nb){
-        
-       
-        $db = config::getConnexion();
-
-        
-        
-        $username=$me->getusername();
-        $mail=$me->getmail();
-        $mdp=$me->getmdp();
-         $sql="INSERT INTO login (user_id,username,password) values ('$nb','$username','$mdp' )";
-  
-        $req=$db->prepare($sql);
-            $req->execute();
-           
-        
-       
-    }
     function supprimerme($id)
 	{
 		$db = config::getConnexion();
-		$sql="DELETE FROM login WHERE user_id=:id";
+		$sql="DELETE FROM me WHERE id=:id";
 		$req = $db->prepare($sql);
 		$req->bindValue(':id',$id);
 		try
@@ -62,11 +48,12 @@ class meC {
     
 }
 class adminC {
-    function ajouteradmin($admin,$nb){
-	
+    function ajouteradmin($admin){
+		$sql="insert into admin (nom,prenom,adresse,mail,num,cp,city) values ( :nom,:prenom,:adresse,:mail,:num,:cp,:city)";
 		$db = config::getConnexion();
-
-    
+		try{
+        $req=$db->prepare($sql);
+		
         $nom=$admin->getnom();
         $prenom=$admin->getprenom();
         $adresse=$admin->getadresse();
@@ -74,14 +61,22 @@ class adminC {
         $num=$admin->getnum();
         $cp=$admin->getcp();
         $city=$admin->getcity();
-        $sql="INSERT INTO adminnn (id,nom,prenom,adresse,mail,num,cp,city) values ( '$nb','$nom','$prenom','$adresse','$mail','$num','$cp','$city')";
 
- $req=$db->prepare($sql);
+		$req->bindValue(':nom',$nom);
+		$req->bindValue(':prenom',$prenom);
+		$req->bindValue(':adresse',$adresse);
+        $req->bindValue(':mail',$mail);
+        $req->bindValue(':num',$num);
+		$req->bindValue(':cp',$cp);
+		$req->bindValue(':city',$city);
 
 		
             $req->execute();
            
-       
+        }
+        catch (Exception $e){
+            echo 'Erreur: '.$e->getMessage();
+        }
 		
 	}
     function afficheradminsidcr()
@@ -89,7 +84,7 @@ class adminC {
         $db = config::getConnexion();
 
 		$vidparpage = 5;
-$vidtotalereq = $db->query("SELECT id FROM adminnn");
+$vidtotalereq = $db->query("SELECT id FROM admin");
 $vidtotale= $vidtotalereq->rowCount();
 
 if(isset($_GET['page']) AND !empty($_GET['page']))
@@ -108,7 +103,7 @@ for ($i=1;$i<=$pagetotale;$i++)
    echo '<a href="admin.php?page='.$i.'">'.$i.'</a> ';
 }
 
-		$sql="SElECT * FROM adminnn ORDER BY id LIMIT $dep,$vidparpage ";
+		$sql="SElECT * FROM admin ORDER BY id LIMIT $dep,$vidparpage ";
 		try{
 		$liste=$db->query($sql);
 		return $liste;
@@ -123,7 +118,7 @@ for ($i=1;$i<=$pagetotale;$i++)
         $db = config::getConnexion();
 
 		$vidparpage = 5;
-$vidtotalereq = $db->query("SELECT id FROM adminnn");
+$vidtotalereq = $db->query("SELECT id FROM admin");
 $vidtotale= $vidtotalereq->rowCount();
 
 if(isset($_GET['page']) AND !empty($_GET['page']))
@@ -145,7 +140,7 @@ for ($i=1;$i<=$pagetotale;$i++)
 
 
 
-		$sql="SElECT * FROM adminnn ORDER BY id DESC LIMIT $dep,$vidparpage ";
+		$sql="SElECT * FROM admin ORDER BY id DESC LIMIT $dep,$vidparpage ";
 		try{
 		$liste=$db->query($sql);
 		return $liste;
@@ -158,7 +153,7 @@ for ($i=1;$i<=$pagetotale;$i++)
 	{   $db = config::getConnexion();
 
 		$vidparpage = 5;
-$vidtotalereq = $db->query("SELECT id FROM adminnn");
+$vidtotalereq = $db->query("SELECT id FROM admin");
 $vidtotale= $vidtotalereq->rowCount();
 
 if(isset($_GET['page']) AND !empty($_GET['page']))
@@ -178,7 +173,7 @@ for ($i=1;$i<=$pagetotale;$i++)
 }
 
 		
-		$sql="SElECT * FROM adminnn ORDER BY nom DESC LIMIT $dep,$vidparpage ";
+		$sql="SElECT * FROM admin ORDER BY nom DESC LIMIT $dep,$vidparpage ";
 		try{
 		$liste=$db->query($sql);
 		return $liste;
@@ -192,7 +187,7 @@ for ($i=1;$i<=$pagetotale;$i++)
         $db = config::getConnexion();
 
 		$vidparpage = 5;
-$vidtotalereq = $db->query("SELECT id FROM adminnn");
+$vidtotalereq = $db->query("SELECT id FROM admin");
 $vidtotale= $vidtotalereq->rowCount();
 
 if(isset($_GET['page']) AND !empty($_GET['page']))
@@ -211,7 +206,7 @@ for ($i=1;$i<=$pagetotale;$i++)
    echo '<a href="admin.php?page='.$i.'">'.$i.'</a> ';
 }
 
-		$sql="SElECT * FROM adminnn ORDER BY nom LIMIT $dep,$vidparpage  ";
+		$sql="SElECT * FROM admin ORDER BY nom LIMIT $dep,$vidparpage  ";
 		try{
 		$liste=$db->query($sql);
 		return $liste;
@@ -225,7 +220,7 @@ for ($i=1;$i<=$pagetotale;$i++)
         $db = config::getConnexion();
 
 		$vidparpage = 5;
-$vidtotalereq = $db->query("SELECT id FROM adminnn");
+$vidtotalereq = $db->query("SELECT id FROM admin");
 $vidtotale= $vidtotalereq->rowCount();
 
 if(isset($_GET['page']) AND !empty($_GET['page']))
@@ -245,7 +240,7 @@ for ($i=1;$i<=$pagetotale;$i++)
 }
 
 		
-		$sql="SElECT * FROM adminnn ORDER BY city LIMIT $dep,$vidparpage  ";
+		$sql="SElECT * FROM admin ORDER BY city LIMIT $dep,$vidparpage  ";
 		try{
 		$liste=$db->query($sql);
 		return $liste;
@@ -259,7 +254,7 @@ for ($i=1;$i<=$pagetotale;$i++)
         $db = config::getConnexion();
 
 		$vidparpage = 5;
-$vidtotalereq = $db->query("SELECT id FROM adminnn");
+$vidtotalereq = $db->query("SELECT id FROM admin");
 $vidtotale= $vidtotalereq->rowCount();
 
 if(isset($_GET['page']) AND !empty($_GET['page']))
@@ -279,7 +274,7 @@ for ($i=1;$i<=$pagetotale;$i++)
 }
 
 		
-		$sql="SElECT * FROM adminnn ORDER BY city DESC LIMIT $dep,$vidparpage ";
+		$sql="SElECT * FROM admin ORDER BY city DESC LIMIT $dep,$vidparpage ";
 		try{
 		$liste=$db->query($sql);
 		return $liste;
@@ -291,7 +286,7 @@ for ($i=1;$i<=$pagetotale;$i++)
      function supprimermead($id)
      {
          $db = config::getConnexion();
-         $sql="DELETE FROM adminnn WHERE id=:id";
+         $sql="DELETE FROM admin WHERE id=:id";
          $req = $db->prepare($sql);
          $req->bindValue(':id',$id);
          try
@@ -310,8 +305,8 @@ for ($i=1;$i<=$pagetotale;$i++)
 
 function recherche()
 {
-    $a = new PDO("mysql:host=127.0.0.1;dbname=alibaba","root","");
-    $r = $a->prepare("SELECT * FROM `adminnn` ORDER BY nom");
+    $a = new PDO("mysql:host=127.0.0.1;dbname=em","root","");
+    $r = $a->prepare("SELECT * FROM `admin` ORDER BY nom");
     if (isset($_GET['nom']) AND !empty($_GET['nom']))
     {
         $qq=$_GET['nom'];
@@ -328,7 +323,7 @@ function recherche()
 
 function modifierusername()
 {   
-    $a = new PDO("mysql:host=127.0.0.1;dbname=alibaba","root","");
+    $a = new PDO("mysql:host=127.0.0.1;dbname=em","root","");
 
     $r=$a->prepare("UPDATE `me` SET 
     `username`=:username
@@ -340,7 +335,7 @@ function modifierusername()
 }
 function modifiermail()
 {
-    $a = new PDO("mysql:host=127.0.0.1;dbname=alibaba","root","");
+    $a = new PDO("mysql:host=127.0.0.1;dbname=em","root","");
 
     $r=$a->prepare("UPDATE `me` SET 
     `mail`=:mail
@@ -349,7 +344,7 @@ function modifiermail()
         'mail' => $_GET['mail'],
         'id' => $_GET['id']
     ));
-     $r=$a->prepare("UPDATE `adminnn` SET `mail`=:mail
+     $r=$a->prepare("UPDATE `admin` SET `mail`=:mail
 WHERE id=:id");
 $r->execute(array(
     'mail' => $_GET['mail'],
@@ -358,7 +353,7 @@ $r->execute(array(
 }
 function modifiermdp()
 {
-    $a = new PDO("mysql:host=127.0.0.1;dbname=alibaba","root","");
+    $a = new PDO("mysql:host=127.0.0.1;dbname=em","root","");
 
     $r=$a->prepare("UPDATE `me` SET 
     `mdp`=:mdp
@@ -370,9 +365,9 @@ function modifiermdp()
 }
 function modifieradresse()
 {
-    $a = new PDO("mysql:host=127.0.0.1;dbname=alibaba","root","");
+    $a = new PDO("mysql:host=127.0.0.1;dbname=em","root","");
 
-    $r=$a->prepare("UPDATE `adminnn` SET 
+    $r=$a->prepare("UPDATE `admin` SET 
     `adresse`=:adresse
     WHERE id=:id");
     $r->execute(array(
@@ -382,9 +377,9 @@ function modifieradresse()
 }
 function modifiernum()
 {
-    $a = new PDO("mysql:host=127.0.0.1;dbname=alibaba","root","");
+    $a = new PDO("mysql:host=127.0.0.1;dbname=em","root","");
 
-    $r=$a->prepare("UPDATE `adminnn` SET 
+    $r=$a->prepare("UPDATE `admin` SET 
     `num`=:num
     WHERE id=:id");
     $r->execute(array(
@@ -394,9 +389,9 @@ function modifiernum()
 }
 function modifiercp()
 {
-    $a = new PDO("mysql:host=127.0.0.1;dbname=alibaba","root","");
+    $a = new PDO("mysql:host=127.0.0.1;dbname=em","root","");
 
-    $r=$a->prepare("UPDATE `adminnn` SET 
+    $r=$a->prepare("UPDATE `admin` SET 
     `cp`=:cp
     WHERE id=:id");
     $r->execute(array(
@@ -406,9 +401,9 @@ function modifiercp()
 }
 function modifiercity()
 {
-    $a = new PDO("mysql:host=127.0.0.1;dbname=alibaba","root","");
+    $a = new PDO("mysql:host=127.0.0.1;dbname=em","root","");
 
-    $r=$a->prepare("UPDATE `adminnn` SET 
+    $r=$a->prepare("UPDATE `admin` SET 
     `city`=:city
     WHERE id=:id");
     $r->execute(array(
@@ -420,16 +415,16 @@ function modifiercity()
 
 
 
-function recherche_compte($x1,$x2)
-{ $a = new PDO("mysql:host=127.0.0.1;dbname=alibaba","root","");
+function recherche_compte()
+{ $a = new PDO("mysql:host=127.0.0.1;dbname=em","root","");
 
-    $r = $a->prepare("SELECT * FROM login WHERE username = ?  AND password = ? ");
-$r->execute(array($x1,$x2));
+    $r = $a->prepare("SELECT * FROM me WHERE mail = ?  AND mdp = ? ");
+$r->execute(array($_GET['mail'],$_GET['mdp']));
 return $r;
 
 }
 function recherche_username()
-{ $a = new PDO("mysql:host=127.0.0.1;dbname=alibaba","root","");
+{ $a = new PDO("mysql:host=127.0.0.1;dbname=em","root","");
 
     $r = $a->prepare("SELECT * FROM me WHERE username = ?  ");
 $r->execute(array($_GET['username']));
@@ -437,7 +432,7 @@ return $r;
 
 }
 function recherche_mail()
-{ $a = new PDO("mysql:host=127.0.0.1;dbname=alibaba","root","");
+{ $a = new PDO("mysql:host=127.0.0.1;dbname=em","root","");
 
     $r = $a->prepare("SELECT * FROM me WHERE mail = ?  ");
 $r->execute(array($_GET['mail']));
@@ -445,9 +440,9 @@ return $r;
 
 }
 function recherche_id()
-{ $a = new PDO("mysql:host=127.0.0.1;dbname=alibaba","root","");
+{ $a = new PDO("mysql:host=127.0.0.1;dbname=em","root","");
 
-    $r = $a->prepare("SELECT * FROM adminnn WHERE id = ?  ");
+    $r = $a->prepare("SELECT * FROM admin WHERE id = ?  ");
 $r->execute(array($_GET['id']));
 return $r;
 

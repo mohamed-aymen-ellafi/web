@@ -3,11 +3,13 @@ class me
 {
 	private $username;
 	private $mail;
-	private $mdp;
+	private $ind;
+    private $mdp;
 
-	function __construct($username,$mail,$mdp){
+	function __construct($username,$mail,$ind,$mdp){
 		$this->username=$username;
 		$this->mail=$mail;
+		$this->ind=$ind;
 		$this->mdp=$mdp;
 
 	}
@@ -19,6 +21,9 @@ class me
 	function getmail(){
 		return $this->mail;
 	}
+	function getind(){
+		return $this->ind;
+	}
 	function getmdp(){
 		return $this->mdp;
 	}
@@ -28,8 +33,13 @@ class me
 		$this->username=$username;
 	}
 	function setmail($mail){
+		
 		$this->mail=$mail;
 	}
+	function setind($ind){
+		$this->ind=$ind;
+	}
+
 	function setmdp($mdp){
 		$this->mdp=$mdp;
 	}

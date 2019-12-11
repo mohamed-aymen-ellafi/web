@@ -20,4 +20,48 @@ table
     margin: 0;
     padding: 0;
     color: white;
+    
+}
+select
+{
+    background: transparent;
+    outline: none;
+     height: 30px;
+     color: crimson;
+     font-size: 16px;
+}
+input[type=text],[type=password],[type=number],[type=select]
+{
+    background: transparent;
+   outline: none;
+    height: 30px;
+    color: #fff;
+    font-size: 16px;
+}
+input[type=submit]
+{
+   
+    outline:none;
+    border-color: brown;
+    height: 40px;
+    background: #fb2525;
+    color: #fff;
+    font-size: 18px;
+    border-radius: 10px;
+}
+input[type=submit]:hover
+{
+    cursor: pointer;
+    background: #ffc107;
+    color: #000;
+}
+a
+{
+    text-decoration: none;
+    font-size: 12px;
+    color: darkgrey;
+}
+a:hover
+{
+    color: yellow;
 }
